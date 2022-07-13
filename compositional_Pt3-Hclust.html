@@ -172,7 +172,10 @@ pre code {
 </div>
 
 
-<p><img src="compositional_Pt3-Hclust_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<p><img src="page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+       <hr width="50%">
+       <p align="center"><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+       <hr width="50%">
 <p><em>We are using the same cities land-use dataset from the previous
 session, from Hu et al. (2021).</em></p>
 <div id="hierarchical-clustering" class="section level1" number="1">
@@ -274,13 +277,13 @@ abline(h = c(3.7,8,10), col = c(&quot;blue2&quot;,&quot;purple&quot;,&quot;red3&
 text(c(38,38,38),c(3.7,8,10), pos=3, col = c(&quot;blue2&quot;,&quot;purple&quot;,&quot;red3&quot;), offset = 0.2, 
      labels=c(&quot;Cut for 5 clusters&quot;,&quot;Cut for 4 clusters&quot;,&quot;Cut for 3 clusters&quot;))</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt3-Hclust_files/figure-html/hierarchical%20clustering%20closed-1.png" alt="\label{hclustComp}Hierarchical cluster dendrogram for (a) compositionally closed and (b) open (CLR-transformed) urban land-use data." width="960" />
+<img src="hierarchical%20clustering%20closed-1.png" alt="Hierarchical cluster dendrograms" width="960" />
 <p class="caption">
-Hierarchical cluster dendrogram for (a) compositionally closed and (b)
+Figure 3.1: Hierarchical cluster dendrogram for (a) compositionally closed and (b)
 open (CLR-transformed) urban land-use data.
 </p>
 </div>
-<p>The plots in are hierarchical clustering ‘trees’, or
+<p>The plots in Figure 3.1 are hierarchical clustering ‘trees’, or
 <em>dendrograms</em>. We can see that the lowest order clusters, joined
 above the variable names, contain two observations (cities, in this
 dataset), reflecting the first iteration of Step 2 in the clustering
@@ -289,7 +292,7 @@ additional observations or clusters grouped together, until at the
 highest level a single grouping exists. ‘Cutting’ the dendrogram at
 different heights will result in different numbers of clusters; the
 lower the cut level, the more clusters we will have. For both the closed
-and open data we have shown cuts in resulting in 3, 4, or 5 clusters.
+and open data we have shown cuts in Figure 3.1 resulting in 3, 4, or 5 clusters.
 There are numerous ways to decide where to make the cut; see Kassambara
 (2018) (<a href="https://shorturl.at/cntxH"
 class="uri">https://shorturl.at/cntxH</a> ) for some of these.</p>
@@ -329,7 +332,7 @@ number="1.0.5">
 number of clusters</h3>
 <p>We did a similar analysis on the same datasets (closed and open
 cities land-use) for K-means clustering, estimating the optimum number
-of clusters using the ‘weighted sum-of-squares’ (wss) method. In we
+of clusters using the ‘weighted sum-of-squares’ (wss) method. In Figure 3.2 we
 estimate the best cluster numbers using another common method, the
 <em>silhouette</em> method.</p>
 <pre class="r"><code>#
@@ -343,11 +346,10 @@ nclus_clr &lt;- fviz_nbclust(data0, kmeans, method = &quot;silhouette&quot;, ver
 ggarrange(nclus_clos,nclus_clr,ncol = 2,nrow = 1, 
           labels = c(&quot;(a) closed&quot;,&quot;(b) open (clr)&quot;))</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt3-Hclust_files/figure-html/assess%20optimum%20clusters%20for%20closed%20and%20open%20data-1.png" alt="\label{nClustComp}Estmation of the optimum number of clusters by the silhouette method for (a) compositionally closed and (b) open (CLR-transformed) urban land-use data." width="75%" />
+<img src="optim_hclust_clusters_closed_open.png" alt="Optimum number of clusters by the silhouette method" width="75%" />
 <p class="caption">
-Estmation of the optimum number of clusters by the silhouette method for
-(a) compositionally closed and (b) open (CLR-transformed) urban land-use
-data.
+Figure 3.2: Estmation of the optimum number of clusters by the silhouette method for
+(a) compositionally closed and (b) open (CLR-transformed) urban land-use data.
 </p>
 </div>
 </div>
@@ -355,7 +357,7 @@ data.
 number="1.0.6">
 <h3><span class="header-section-number">1.0.6</span> Cut dendrograms
 into clusters</h3>
-<p>This was illustrated in above, and we now investigate the clustering
+<p>This was illustrated in Figure 3.1 above, and we now investigate the clustering
 in more detail, assuming 4 clusters for both closed and open data.</p>
 <p><strong>Clusters for closed data</strong></p>
 <pre class="r"><code>cities_clos_grp &lt;- cutree(cities_clos_hc, k = 4)
@@ -409,7 +411,7 @@ background-color: transparent;
 }
 </style><div class="tabwid"><style>.cl-5c0bcc36{}.cl-5c002bf6{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5c002c14{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5c004bcc{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-5c004bd6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-5c008d30{width:72pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d3a{width:72pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d3b{width:360pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d3c{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d44{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d45{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d4e{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d4f{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d58{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d59{width:360pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d62{width:72pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d63{width:72pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-5c0bcc36'>
 <caption class>
-<p>Cities in each hierarchical cluster from analysis of compsitionally
+<p>Table 3.1: Cities in each hierarchical cluster from analysis of compsitionally
 closed data.</p>
 </caption>
 <thead><tr style="overflow-wrap:break-word;"><td class="cl-5c008d62"><p class="cl-5c004bcc"><span class="cl-5c002bf6">Cluster</span></p></td><td class="cl-5c008d59"><p class="cl-5c004bcc"><span class="cl-5c002bf6">Cities</span></p></td><td class="cl-5c008d63"><p class="cl-5c004bd6"><span class="cl-5c002bf6">Freq</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-5c008d30"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cluster 1</span></p></td><td class="cl-5c008d3b"><p class="cl-5c004bcc"><span class="cl-5c002c14">New York(CO1) Shanghai(I3) Beijing(CO4) Paris(O8) London(O9) Moscow(O10)</span></p></td><td class="cl-5c008d3a"><p class="cl-5c004bd6"><span class="cl-5c002c14">6</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c008d44"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cluster 2</span></p></td><td class="cl-5c008d45"><p class="cl-5c004bcc"><span class="cl-5c002c14">Sao Paulo(CO2) Jakarta(C5) Guangzhou(C6) Melbourne(C7)</span></p></td><td class="cl-5c008d3c"><p class="cl-5c004bd6"><span class="cl-5c002c14">4</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c008d30"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cluster 3</span></p></td><td class="cl-5c008d3b"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cairo(C11) Sydney(CO12) Istanbul(CO14) Santiago de Chile(C20) Vancouver(C24) Tehran(C25) San Francisco(C28) Rio de Janeiro(C29) Islamabad(OL30) Lisbon(CO33) Kyoto(C37)</span></p></td><td class="cl-5c008d3a"><p class="cl-5c004bd6"><span class="cl-5c002c14">11</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c008d4f"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cluster 4</span></p></td><td class="cl-5c008d4e"><p class="cl-5c004bcc"><span class="cl-5c002c14">Nanjing(I13) Milan(I15) Washington DC(O16) Qingdao(I17) Wuhan(I18) Berlin(O19) Cape Town(OL21) Mumbai(OL22) Madrid(O23) Changsha(I26) Rome(O27) Amsterdam(I31) Nairobi(OL32) Munich(O34) Dongying(O35) Cologne(O36) Shenzhen(I38) Zurich(O39) Hong Kong(CO40)</span></p></td><td class="cl-5c008d58"><p class="cl-5c004bd6"><span class="cl-5c002c14">19</span></p></td></tr></tbody></table></div></template>
@@ -480,7 +482,7 @@ background-color: transparent;
 }
 </style><div class="tabwid"><style>.cl-5c2e742a{}.cl-5c22c01c{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5c22c03a{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5c22de44{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-5c22de4e{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-5c23239a{width:72pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323a4{width:72pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323ae{width:360pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323b8{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323b9{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323ba{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323c2{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323c3{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323cc{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323cd{width:360pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323ce{width:72pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323d6{width:72pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-5c2e742a'>
 <caption class>
-<p>Cities in each hierarchical cluster from analysis of open
+<p>Table 3.2: Cities in each hierarchical cluster from analysis of open
 (CLR-transformed) data.</p>
 </caption>
 <thead><tr style="overflow-wrap:break-word;"><td class="cl-5c2323ce"><p class="cl-5c22de44"><span class="cl-5c22c01c">Cluster</span></p></td><td class="cl-5c2323cd"><p class="cl-5c22de44"><span class="cl-5c22c01c">Cities</span></p></td><td class="cl-5c2323d6"><p class="cl-5c22de4e"><span class="cl-5c22c01c">Freq</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-5c23239a"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cluster 1</span></p></td><td class="cl-5c2323ae"><p class="cl-5c22de44"><span class="cl-5c22c03a">New York(CO1) Sao Paulo(CO2) Beijing(CO4) Jakarta(C5) Guangzhou(C6) Melbourne(C7) Cairo(C11) Sydney(CO12) Istanbul(CO14) Santiago de Chile(C20) Vancouver(C24) Tehran(C25) San Francisco(C28) Rio de Janeiro(C29) Lisbon(CO33) Kyoto(C37) Hong Kong(CO40)</span></p></td><td class="cl-5c2323a4"><p class="cl-5c22de4e"><span class="cl-5c22c03a">17</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c2323b9"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cluster 2</span></p></td><td class="cl-5c2323ba"><p class="cl-5c22de44"><span class="cl-5c22c03a">Shanghai(I3) Paris(O8) London(O9) Moscow(O10) Nanjing(I13) Milan(I15) Washington DC(O16) Qingdao(I17) Wuhan(I18) Berlin(O19) Madrid(O23) Changsha(I26) Rome(O27) Amsterdam(I31) Munich(O34) Dongying(O35) Shenzhen(I38) Zurich(O39)</span></p></td><td class="cl-5c2323b8"><p class="cl-5c22de4e"><span class="cl-5c22c03a">18</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c23239a"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cluster 3</span></p></td><td class="cl-5c2323ae"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cape Town(OL21) Mumbai(OL22) Islamabad(OL30) Nairobi(OL32)</span></p></td><td class="cl-5c2323a4"><p class="cl-5c22de4e"><span class="cl-5c22c03a">4</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c2323c3"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cluster 4</span></p></td><td class="cl-5c2323c2"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cologne(O36)</span></p></td><td class="cl-5c2323cc"><p class="cl-5c22de4e"><span class="cl-5c22c03a">1</span></p></td></tr></tbody></table></div></template>
@@ -505,7 +507,7 @@ a level which intersects exactly 4 ‘branches’) is somewhat subjective,
 but could be based on other information such as K-means clustering, PCA,
 or pre-existing knowledge of the data.</p>
 <p>A diagram comparing the clusters in cut dendrograms for closed and
-open data is shown below, in .</p>
+open data is shown in Figure 3.3.</p>
 </div>
 <div id="plot-dendrograms-comparing-closed-and-open-data-with-cuts"
 class="section level2" number="1.1">
@@ -528,9 +530,9 @@ gg_cutden_open &lt;- fviz_dend(cities_open_hc, k = 4, # Cut in five groups
 ggarrange(gg_cutden_clos,gg_cutden_open, nrow = 2, 
           labels = c(&quot;(a) closed&quot;,&quot;(b) open (CLR)&quot;))</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt3-Hclust_files/figure-html/plot%20cut%20dendrogram%20open-1.png" alt="\label{hclustCutComp}Hierarchical cluster dendrograms for (a) closed and (b) CLR-transformed (open) urban land-use data, showing clusters within dashed rectangles." width="960" />
+<img src="plot%20cut%20dendrogram%20open-1.png" alt="Hierarchical dendrograms with rectangles around clusters" width="960" />
 <p class="caption">
-Hierarchical cluster dendrograms for (a) closed and (b) CLR-transformed
+Figure 3.3: Hierarchical cluster dendrograms for (a) closed and (b) CLR-transformed
 (open) urban land-use data, showing clusters within dashed rectangles.
 </p>
 </div>
@@ -541,6 +543,9 @@ Different clustering, and potentially even different numbers of
 clusters, result from the closed and open (CLR-transformed) versions of
 our cities land-use data.</p>
 </div>
+       <hr width="50%">
+       <p align="center"><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+       <hr width="50%">
 <div id="references-and-r-packages" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> References and R
 Packages</h2>
@@ -577,6 +582,9 @@ Common String</em> <em>Operations</em>. R package version 1.4.0. <a
 href="https://CRAN.R-project.org/package=stringr"
 class="uri">https://CRAN.R-project.org/package=stringr</a></p>
 </div>
+       <hr width="50%">
+       <p align="center"><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+       <hr width="50%">
 </div>
 
 
