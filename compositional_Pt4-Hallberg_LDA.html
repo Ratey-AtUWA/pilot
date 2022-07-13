@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>compositional_Pt4-Hallberg_LDA.knit</title>
+
+<script src="compositional_Pt4-Hallberg_LDA_files/header-attrs-2.14/header-attrs.js"></script>
+<script src="compositional_Pt4-Hallberg_LDA_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="compositional_Pt4-Hallberg_LDA_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="compositional_Pt4-Hallberg_LDA_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="compositional_Pt4-Hallberg_LDA_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="compositional_Pt4-Hallberg_LDA_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="compositional_Pt4-Hallberg_LDA_files/navigation-1.1/tabsets.js"></script>
+<link href="compositional_Pt4-Hallberg_LDA_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="compositional_Pt4-Hallberg_LDA_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<p><img src="compositional_Pt4-Hallberg_LDA_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<p>We are using a curated version of a whole rock major element dataset
+from Hallberg (<a
+href="https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry"
+class="uri">https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry</a>)</p>
+<div id="lda-linear-discriminant-analysis" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span> LDA – Linear
+Discriminant Analysis</h1>
+<p>We use <strong>linear discriminant analysis (LDA)</strong> to create
+functions of the dataset variables which maximise the separation between
+pre-defined categories. LDA is also sensitive to compositional closure,
+as I hope we’re starting to expect by now! Predicting existing
+categories is not the most useful application of LDA – ideally, we would
+like to measure some key variables so we can predict a previously
+unknown category (a strategy for machine learning). Towards the end of
+this section we will see if we can divide our dataset into two groups –
+one to ‘train’ our LDA model to generate a set of linear discriminant
+functions, which we can then apply to the remaining observations in our
+dataset to <em>validate</em> our LDA model (a later session will cover
+this issue).</p>
+<p>Linear discriminant analysis resembles principal components analysis
+(PCA), in that it generates new sets of variables (dimensions) to reduce
+the complexity (<em>i.e</em>. dimensionality) of multivariate data.
+Another important feature of LDA, as mentioned above, is its ability to
+classify the observations in our data – LDA is a <strong>supervised
+classification</strong> method, in that it requires us to use
+pre-defined categories in our dataset. Key differences between LDA and
+PCA are that:</p>
+<ul>
+<li>the components of PCA capture successively less multivariate
+<em>variance</em> (and are are not ‘supervised’ by pre-defined
+categories)</li>
+<li>the dimensions of LDA <em>maximise some measure of separation</em>
+between supervised categories.</li>
+</ul>
+<p>In LDA, this is achieved by generating new variables (the dimensions)
+which are linear functions of the existing variables in the dataset.</p>
+<p>To implement LDA in R, we use the <strong>lda()</strong> function in
+the <strong>MASS</strong> package (Venables and Ripley, 2002). We
+specify the variables to be considered using a formula similar to that
+used for multiple regression, and we set the prior (initial)
+probabilities of an observation being in a particular category at the
+actual frequencies at which they occur in the data.</p>
+<p>In practice, we apply LDA to a scaled transformations of our
+variables (<em>i.e</em>. conversion to Z-scores with mean = 0 and
+standard deviation = 1). This avoids the variables with larger absolute
+values having an unbalanced effect on the results.</p>
+<div id="lda-on-closed-whole-rock-major-element-data"
+class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> LDA on closed whole
+rock major element data</h2>
+<p>We will use LDA to discriminate the rock type, contained in the
+column ‘<strong>Rock</strong>’ in the Hallberg dataset. The variables we
+will use are the major element oxide contents, SiO<sub>2</sub>,
+TiO<sub>2</sub>, Al<sub>2</sub>O<sub>3</sub>,
+Fe<sub>2</sub>O<sub>2</sub>, FeO, MnO, MgO, CaO, Na<sub>2</sub>O,
+K<sub>2</sub>O, &amp; P<sub>2</sub>O<sub>5</sub>. We’re excluding LOI,
+CO<sub>2</sub> and H<sub>2</sub>O, since these variables contain too
+many similar low values which adversely affects the matrix algebra
+calculation of the linear discriminant analysis procedure.</p>
+<pre class="r"><code>data0 &lt;- Hallberg
+data0[,c(11:24)] &lt;- scale(data0[,11:24]) # scale just numeric variables
+lda_rock_clos &lt;- lda(formula = Rock ~ SiO2 + TiO2 + Al2O3 + Fe2O3 + FeO + MnO + 
+                       MgO + CaO + Na2O + K2O + P2O5, 
+                    data = data0,
+                    prior = as.numeric(summary(Hallberg$Rock))/
+                      nrow(Hallberg)) 
+print(lda_rock_clos)</code></pre>
+<pre><code>## Call:
+## lda(Rock ~ SiO2 + TiO2 + Al2O3 + Fe2O3 + FeO + MnO + MgO + CaO + 
+##     Na2O + K2O + P2O5, data = data0, prior = as.numeric(summary(Hallberg$Rock))/nrow(Hallberg))
+## 
+## Prior probabilities of groups:
+##            Basalt          Dolerite            Gabbro    High Mg Basalt 
+##        0.44236760        0.18068536        0.05919003        0.15576324 
+##      Metasediment        Peridotite        Pyroxenite Spinel Peridotite 
+##        0.05607477        0.05607477        0.02492212        0.02492212 
+## 
+## Group means:
+##                         SiO2       TiO2       Al2O3       Fe2O3          FeO
+## Basalt             0.3084401  0.2459773  0.49527003 -0.06535296 -0.091833958
+## Dolerite           0.2536094  0.3514725  0.43884184 -0.22296047  0.321333736
+## Gabbro             0.2937599  0.8034106  0.48776477 -0.23837591  0.614435503
+## High Mg Basalt    -0.8016317 -0.9876860 -1.25399402  0.35319698  0.001603046
+## Metasediment       1.1724700  1.0417902  0.64383635 -0.63064848  0.389379722
+## Peridotite        -1.9439282 -1.4114283 -2.29014414  1.29567179 -1.363351515
+## Pyroxenite         0.0670240 -0.6657198 -0.01277907 -0.76962796  0.055454202
+## Spinel Peridotite -1.3322038 -1.1519292 -1.57665343  0.40846556 -0.032937847
+##                             MnO        MgO        CaO       Na2O          K2O
+## Basalt             0.0494121314 -0.5275178  0.5068287  0.5393969 -0.086514184
+## Dolerite          -0.0152749597 -0.4462841  0.3126360  0.3220639 -0.003243915
+## Gabbro             0.0002187093 -0.5762544  0.2536244  0.4780190 -0.185275643
+## High Mg Basalt    -0.3781899477  1.2674713 -0.6191148 -1.0658958  0.104191917
+## Metasediment       1.8138656429 -0.7723447 -0.8330225 -0.2228440  1.001512573
+## Peridotite        -0.8687716924  2.4596448 -2.0916973 -1.6023006 -0.479566174
+## Pyroxenite        -0.2147862094  0.3565755 -0.3126733 -0.8427350  0.634071172
+## Spinel Peridotite -0.3148293145  1.8929086 -1.1024191 -1.4333945 -0.460475248
+##                         P2O5
+## Basalt             0.1689722
+## Dolerite           0.3619729
+## Gabbro             0.6261688
+## High Mg Basalt    -0.9926542
+## Metasediment       0.9078309
+## Peridotite        -1.0034473
+## Pyroxenite         0.5143324
+## Spinel Peridotite -1.2058180
+## 
+## Coefficients of linear discriminants:
+##               LD1           LD2        LD3         LD4         LD5         LD6
+## SiO2  -0.11675688  4.479745e-02 -1.1978038 -0.51207160 -0.12259146  0.51176295
+## TiO2  -0.50114092  2.351467e-01  0.8834733 -0.34406530  1.17025537  0.74595219
+## Al2O3  0.38713254 -3.016101e-01 -0.1049169  0.05725293 -0.65118614  2.20306685
+## Fe2O3 -0.26082391  3.383184e-01 -0.2441469 -0.46117236  0.02873875 -0.01437229
+## FeO    0.03468626  3.977589e-01 -1.3804458  0.26532421  0.38546304 -0.05973542
+## MnO   -0.00106553 -7.192118e-01  0.2733004 -0.73982659 -0.30001833  0.49318353
+## MgO   -3.55142855  1.244192e+00 -0.9291281 -0.68599879 -0.62045858  3.45085090
+## CaO   -0.33303427  1.402722e+00 -0.5777820 -0.54696700 -0.21270459  0.60683759
+## Na2O  -0.27203459  1.081158e+00  0.1957390 -0.39401157 -0.27169859  0.11494631
+## K2O   -0.17017986 -4.456921e-06 -0.5596989 -0.39840631 -0.28530384 -0.35084383
+## P2O5   0.36253186 -1.308812e-01 -0.1906176  0.94296866 -0.58757244 -0.14428252
+##              LD7
+## SiO2  -0.7015405
+## TiO2  -1.0000589
+## Al2O3  0.5660349
+## Fe2O3  0.3759341
+## FeO    0.4309064
+## MnO   -0.1910895
+## MgO   -2.1798895
+## CaO   -1.0830594
+## Na2O  -0.5642733
+## K2O   -0.3594448
+## P2O5  -0.4795614
+## 
+## Proportion of trace:
+##    LD1    LD2    LD3    LD4    LD5    LD6    LD7 
+## 0.8683 0.0816 0.0319 0.0102 0.0061 0.0019 0.0001</code></pre>
+</div>
+<div id="lda-on-open-clr-whole-rock-major-element-data"
+class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> LDA on open (CLR)
+whole rock major element data</h2>
+<pre class="r"><code>data0 &lt;- Hallberg_clr
+data0[,11:24] &lt;- scale(data0[,11:24]) # scale just numeric variables
+lda_rock_open &lt;- lda(formula = Rock ~ SiO2 + TiO2 + Al2O3 + Fe2O3 + FeO + MnO + 
+                       MgO + CaO + Na2O + K2O + P2O5, 
+                    data = data0,
+                    prior = as.numeric(summary(data0$Rock))/nrow(data0)) 
+print(lda_rock_open)</code></pre>
+<pre><code>## Call:
+## lda(Rock ~ SiO2 + TiO2 + Al2O3 + Fe2O3 + FeO + MnO + MgO + CaO + 
+##     Na2O + K2O + P2O5, data = data0, prior = as.numeric(summary(data0$Rock))/nrow(data0))
+## 
+## Prior probabilities of groups:
+##            Basalt          Dolerite            Gabbro    High Mg Basalt 
+##        0.44236760        0.18068536        0.05919003        0.15576324 
+##      Metasediment        Peridotite        Pyroxenite Spinel Peridotite 
+##        0.05607477        0.05607477        0.02492212        0.02492212 
+## 
+## Group means:
+##                          SiO2       TiO2      Al2O3       Fe2O3         FeO
+## Basalt            -0.03835926  0.3646221  0.4516943 -0.08782777 -0.19513939
+## Dolerite          -0.21388221  0.3646934  0.3201445 -0.28657249  0.03189824
+## Gabbro            -0.16228643  0.7578497  0.3737769 -0.20972947  0.24298069
+## High Mg Basalt     0.14734474 -1.0597925 -0.9731453  0.55716466  0.42377464
+## Metasediment      -0.18158920  0.8017777  0.2329880 -1.08796824 -0.31185040
+## Peridotite         0.62415905 -1.8953818 -2.1789718  1.41154452 -0.20253699
+## Pyroxenite         0.33901320 -0.6579612  0.3155098 -0.85424153  0.36715544
+## Spinel Peridotite  0.36125311 -1.1736895 -1.0812305  0.77861676  0.79700747
+##                            MnO        MgO         CaO       Na2O         K2O
+## Basalt             0.001324027 -0.4660738  0.35307393  0.5384529  0.06727337
+## Dolerite          -0.188033877 -0.3747101  0.16331589  0.4336483  0.23055135
+## Gabbro            -0.111081684 -0.5685980  0.13279147  0.5040541  0.08721642
+## High Mg Basalt    -0.080781778  1.2742090 -0.17168210 -1.1328506 -0.48111205
+## Metasediment       1.057112010 -1.1638490 -0.96994042 -0.1479008  1.24657744
+## Peridotite        -0.301399413  2.0715731 -1.88960313 -2.1684354 -1.20407204
+## Pyroxenite         0.042349880  0.6216421  0.04959117 -0.4322574  1.01126036
+## Spinel Peridotite  0.365746012  1.7120506 -0.30908728 -1.1742876 -1.17268573
+##                         P2O5
+## Basalt             0.3148430
+## Dolerite           0.3686676
+## Gabbro             0.6108783
+## High Mg Basalt    -1.3561559
+## Metasediment       0.7249313
+## Peridotite        -1.0208868
+## Pyroxenite         0.7330402
+## Spinel Peridotite -1.3033050
+## 
+## Coefficients of linear discriminants:
+##               LD1          LD2        LD3         LD4         LD5        LD6
+## SiO2  -0.04765842 -0.423355645  0.5114796 -0.12880277 -0.10636055 -0.8668095
+## TiO2   0.54850520  0.370440903  0.5746924  0.48689729 -0.85101954  0.4051308
+## Al2O3 -0.74284299 -0.295621270 -0.2015829 -0.08273223  1.01555788  0.3356844
+## Fe2O3  0.14342781  0.295944506  0.4594335  0.08447096  0.20269857 -0.2507642
+## FeO   -0.14407667  0.286326751 -0.7319779  0.29060105 -0.91771552 -0.1847214
+## MnO    0.05406500 -0.840539405  0.1210883  0.13861474  0.84912111  0.9028818
+## MgO    2.06828163  0.974150479 -0.5479217 -1.10047564  0.33244318  1.3770919
+## CaO   -0.24738154  0.945233940 -0.5085690  0.39001145  0.06995049 -0.3487268
+## Na2O  -0.33161537  0.942609416  0.3440674 -0.74774735  0.17428155  0.6107042
+## K2O   -0.05680825 -0.307181780 -0.7826211  0.06681662  0.06472584 -0.4738253
+## P2O5  -0.72283728  0.003425796 -0.4855696 -1.18225862 -0.21579913  0.2112064
+##               LD7
+## SiO2  -0.46041835
+## TiO2  -0.38977854
+## Al2O3 -0.17902377
+## Fe2O3 -0.29926602
+## FeO   -0.13037267
+## MnO    0.12373446
+## MgO    0.37301819
+## CaO   -0.47200616
+## Na2O   1.03015016
+## K2O    0.07869831
+## P2O5  -0.25881649
+## 
+## Proportion of trace:
+##    LD1    LD2    LD3    LD4    LD5    LD6    LD7 
+## 0.8453 0.0927 0.0287 0.0219 0.0087 0.0022 0.0005</code></pre>
+<p>The LDA model specified and the prior probabilities are reported back
+to us in the output. The <em>Group means</em> sub-table in the output
+contains the centroids of the categories (5 classes, in our whole rock
+data) in the n-dimensional space defined by the n variables used for
+classification. The <em>Coefficients of linear</em>
+<em>discriminants</em> sub-table essentially defines the linear
+discriminant functions that separate our categories, since each function
+(LD1, LD2, <em>etc</em>.) is a linear combination of all the variables.
+Finally, the <em>Proportion of trace</em> sub-table gives the
+<em>proportions of between-class variance</em> that are explained by
+successive discriminant functions (<em>e.g</em>. for the open Hallberg
+rock data, LD1 explains 0.716 (72%) and LD2 explains 0.171 (17%) of
+variance between Rock type categories).</p>
+<p>[<strong>Note</strong>: sometimes we cannot make an LDA model,
+because the predictors are collinear (highly correlated). We may be able
+to fix this by inspecting a correlation matrix for all the predictor
+variables, and removing <em>one</em> variable at a time from correlated
+pairs, then re-running the LDA procedure. By analogy with multiple
+linear regression, this would mean a Pearson’s r <span
+class="math inline">\(\ge\)</span> 0.8.]</p>
+</div>
+<div id="visualising-lda-separation" class="section level2"
+number="1.3">
+<h2><span class="header-section-number">1.3</span> Visualising LDA
+separation</h2>
+<div id="lda-histograms" class="section level3" number="1.3.1">
+<h3><span class="header-section-number">1.3.1</span> LDA histograms</h3>
+<p>We can plot the separation achieved by each linear discriminant (LD)
+function by predicting the classification using the input data, then
+using the <strong>ldahist</strong> function (Venables and Ripley 2002).
+To see the separation in another LDA dimension, we change the subscript
+in the <strong>predClos$x[,1]</strong> option. Histograms (actually
+drawn with custom code, enabling a plot with a side-by side comparison)
+are shown in .</p>
+<pre class="r"><code>predClos &lt;- predict(lda_rock_clos, Hallberg[,11:21])
+predOpen &lt;- predict(lda_rock_open, Hallberg[,11:21])
+LD1c &lt;- data.frame(Rock=as.character(Hallberg$Rock),LD1=predClos$x[,1])
+LD1c$Rock &lt;- factor(LD1c$Rock, levels=levels(Hallberg$Rock))
+par(mfcol = c(nlevels(LD1c$Rock),2), mar = c(1,2,1,1), oma = c(1,0,1,0), 
+    mgp = c(0.75,0.2,0), tcl=0.15)
+for (i in 1:nlevels(LD1c$Rock)){
+  with(subset(LD1c, subset=LD1c$Rock==levels(LD1c$Rock)[i]),
+       hist(LD1, main = &quot;&quot;, breaks = pretty(LD1c$LD1, n=20), col=5,
+       xlim = c(min(LD1c$LD1, na.rm=T),max(LD1c$LD1, na.rm=T))))
+  box()
+  mtext(levels(LD1c$Rock)[i],3,-1.55,adj=0.505, cex = 0.85, font = 2, col=14)
+  mtext(levels(LD1c$Rock)[i],3,-1.5, cex = 0.85, font = 2, col = 11)
+  if(i==1) mtext(&quot;(a) Closed data&quot;, 3, 0.5, font=2, cex = 1.4, col = 11)
+}
+
+LD1o &lt;- data.frame(Rock=as.character(Hallberg$Rock),LD1=predOpen$x[,1])
+LD1o$Rock &lt;- factor(LD1o$Rock, levels=levels(Hallberg$Rock))
+for (i in 1:nlevels(LD1o$Rock)){
+  with(subset(LD1o, subset=LD1o$Rock==levels(LD1o$Rock)[i]),
+       hist(LD1, main = &quot;&quot;, breaks = pretty(LD1o$LD1, n=20), col=4,
+            xlim = c(min(LD1o$LD1, na.rm=T),max(LD1o$LD1, na.rm=T))))
+  box()
+  mtext(levels(LD1o$Rock)[i],3,-1.55, adj=0.505, cex = 0.85, font = 2, col=14)
+  mtext(levels(LD1o$Rock)[i],3,-1.5, cex = 0.85, font = 2, col = 2)
+  if(i==1) mtext(&quot;(b) Open data&quot;, 3, 0.5, font=2, cex = 1.4, col = 2)
+}</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt4-Hallberg_LDA_files/figure-html/lda%20hist%20compare-1.png" alt="\label{ldahistComp}Histograms based on the first linear discriminant function for (a) closed and (b) open (CLR-transformed) whole-rock major element data." width="80%" />
+<p class="caption">
+Histograms based on the first linear discriminant function for (a)
+closed and (b) open (CLR-transformed) whole-rock major element data.
+</p>
+</div>
+<p>The sets of histograms for closed and open data in both show some
+separation of categories, but with overlap. Of course this only shows
+the separation in one dimension, and two or more dimensions may be
+needed to achieve clear separation. We will make plots showing more than
+one LDA dimension later.</p>
+</div>
+<div id="partition-plots" class="section level3" number="1.3.2">
+<h3><span class="header-section-number">1.3.2</span> Partition
+plots</h3>
+<p>Another potentially useful way of showing separation of groups in LDA
+is to use a <em>partition plot</em>, accessible using the
+<strong>partimat()</strong> function from the klaR R package (Weihs et
+al.v 2005).</p>
+<pre class="r"><code>require(klaR)</code></pre>
+<pre><code>## Loading required package: klaR</code></pre>
+<pre class="r"><code>par(mfrow = c(1,2),mar = c(3,3,1,1), mgp= c(1.3,0.2,0), tcl=0.2, font.lab=2)
+with(Hallberg, 
+     drawparti(Rock, SiO2, TiO2, method=&quot;lda&quot;,image.colors = c(10,7,14,13,2:5),
+               xlab = expression(bold(paste(SiO[2],&quot; (%)&quot;))), 
+               ylab = expression(bold(paste(TiO[2],&quot; (%)&quot;))))
+     )
+mtext(&quot;(a)&quot;, 3, -1.5, adj=0.05, font=2, cex = 1.2)
+with(Hallberg_clr, 
+     drawparti(Rock, SiO2, TiO2, method=&quot;lda&quot;,image.colors = c(10,7,14,13,2:5),
+               xlab = expression(bold(paste(SiO[2],&quot; (CLR-transformed)&quot;))), 
+               ylab = expression(bold(paste(TiO[2],&quot; (CLR-transformed)&quot;))))
+     )
+mtext(&quot;(b)&quot;, 3, -1.5, adj=0.95, font=2, cex = 1.2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt4-Hallberg_LDA_files/figure-html/pplot%20comparison-1.png" alt="\label{pplotComp}Partition plots for (a) closed and (b) open (CLR-transformed) whole rock major element data, based on the SiO2 and TiO2 contents. Filled symbols are means in each category, with red letters showing apparently mis-classified observations." width="100%" />
+<p class="caption">
+Partition plots for (a) closed and (b) open (CLR-transformed) whole rock
+major element data, based on the SiO2 and TiO2 contents. Filled symbols
+are means in each category, with red letters showing apparently
+mis-classified observations.
+</p>
+</div>
+<p>Partition plots, such as those in , are presented for single pairwise
+combinations of the variables (in this example SiO<sub>2</sub> and
+TiO<sub>2</sub>) used to make the LDA model. We can make differnt plots
+by specifying different variables in the <strong>drawparti()</strong>
+function. Each such plot can be considered to be a different view of the
+data (which of course has multiple dimensions). Colored regions
+delineate each classification area. Any observation that falls within a
+region is predicted to be from a specific category, with apparent
+mis-classification in a different color (but we usually need more than
+two dimensions for correct classification). Each plot also includes the
+apparent error rate for that view of the data.</p>
+</div>
+</div>
+<div id="scatter-plots-resembling-biplots" class="section level2"
+number="1.4">
+<h2><span class="header-section-number">1.4</span> Scatter Plots
+resembling biplots</h2>
+<p>Scatter-plots showing each variable and observation in linear
+discriminant dimensions, and grouped by category, are useful for visual
+assessment of how well the LDA model separates the observations.</p>
+<pre class="r"><code>par(mfrow = c(2,2), mar = c(3.5,3.5,1,1), mgp = c(1.5,0.3,0), tcl = 0.25,
+    lend = &quot;square&quot;, ljoin = &quot;mitre&quot;, cex.main = 0.9, font.lab=2)
+plot(lda_rock_clos$scaling[,1], lda_rock_clos$scaling[,2],
+     xlim = c(-4,1), ylim=c(-0.8,1.4), 
+     xlab=&quot;Linear Discriminant [1]&quot;, ylab=&quot;Linear Discriminant [2]&quot;, 
+     main=&quot;(a) Variable Coefficients [LD1, LD2]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2)
+abline(h=0,col=&quot;grey&quot;,lty=2)
+text(lda_rock_clos$scaling[,1],lda_rock_clos$scaling[,2],
+     labels=names(Hallberg)[11:21], pos = c(3,1,1,4),
+     cex = 0.95, col = 2, offset = 0.2)
+mtext(&quot;(a)&quot;, 3, -1.5, adj = 0.45, cex = 1.2, font = 2)
+
+ldaPred_rock_clos &lt;- predict(lda_rock_clos)
+
+for(i in 1:NROW(lda_rock_clos$scaling)){
+  arrows(0,0,lda_rock_clos$scaling[i,1],lda_rock_clos$scaling[i,2],
+         length = 0.1, col = 7)
+}
+legend(&quot;bottomleft&quot;,legend=levels(Hallberg$Rock), ncol = 1, bty=&quot;n&quot;, 
+       inset=0.01, col=c(1:3,6,8,9,11,12), pch=c(0:7), pt.lwd = 2,
+    title=&quot;Rock Type in (b) - (d)&quot;, pt.cex = 1.5, cex = 1.1, y.intersp = 1)
+
+plot(ldaPred_rock_clos$x[,1], ldaPred_rock_clos$x[,2],
+     col=c(1:3,6,8,9,11,12)[Hallberg_clr$Rock],
+     pch=c(0:7)[Hallberg_clr$Rock], lwd = 2, cex = 1.5, 
+  xlab=&quot;Linear Discriminant [1]&quot;, ylab=&quot;Linear Discriminant [2]&quot;, 
+  main=&quot;Predictions for Observations [LD1, LD2]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2)
+abline(h=0,col=&quot;grey&quot;,lty=2)
+# text(ldaPred_rock_clos$x[,1], ldaPred_rock_clos$x[,2], 
+#      labels=as.character(Hallberg$Rock), col=c(2,4,6,3,12)[Hallberg$Rock],
+#      pos=1, offset=0.15, cex=0.65)
+# legend(&quot;bottomright&quot;,legend=levels(Hallberg$Rock)[6:13],
+#        ncol = 2, col=c(6:13), pch=c(5:12), pt.lwd = 2,
+#        title=expression(bold(&quot;Rock Type&quot;)),
+#        bty=&quot;n&quot;, inset=0.01, 
+#        pt.cex=c(1.8,1.8,2,2,1.3), cex=0.9)
+mtext(&quot;(b)&quot;, 3, -1.5, adj = 0.95, cex = 1.2, font = 2)
+
+plot(ldaPred_rock_clos$x[,1], ldaPred_rock_clos$x[,3], 
+     col=c(1:3,6,8,9,11,12)[Hallberg_clr$Rock],
+     pch=c(0:7)[Hallberg_clr$Rock], lwd = 2, cex = 1.5, 
+  xlab=&quot;Linear Discriminant [1]&quot;, ylab=&quot;Linear Discriminant [3]&quot;, 
+  main=&quot;Predictions for Observations [LD1, LD3]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2)
+abline(h=0,col=&quot;grey&quot;,lty=2)
+# text(ldaPred_rock_clos$x[,1], ldaPred_rock_clos$x[,3], 
+#      labels=Hallberg$Rock, col=c(1:13)[Hallberg$Rock],
+#      pos=1, offset=0.15, cex=0.65)
+mtext(&quot;(c)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)
+
+plot(ldaPred_rock_clos$x[,2], ldaPred_rock_clos$x[,4],
+     col=c(1:3,6,8,9,11,12)[Hallberg_clr$Rock],
+     pch=c(0:7)[Hallberg_clr$Rock], lwd = 2, cex = 1.5, 
+  xlab=&quot;Linear Discriminant [2]&quot;, ylab=&quot;Linear Discriminant [4]&quot;, 
+  main=&quot;Predictions for Observations [LD2, LD4]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2)
+abline(h=0,col=&quot;grey&quot;,lty=2)
+# text(ldaPred_rock_clos$x[,2], ldaPred_rock_clos$x[,4], 
+#      labels=Hallberg$Rock, col=c(2,4,6,3,12)[Hallberg$Rock],
+#      pos=1, offset=0.15, cex=0.65)
+mtext(&quot;(d)&quot;, 3, -1.5, adj = 0.55, cex = 1.2, font = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt4-Hallberg_LDA_files/figure-html/plot%20LDA%20closed-1.png" alt="\label{LDAclos}Linear discriminant analysis (LDA) plots for closed rock composition data: (a) variable coefficients in LD1-LD2 space, and predictions for observations in (b) LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD4 space. Legend in (d) also applies to (b) and (c)." width="80%" />
+<p class="caption">
+Linear discriminant analysis (LDA) plots for closed rock composition
+data: (a) variable coefficients in LD1-LD2 space, and predictions for
+observations in (b) LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD4 space.
+Legend in (d) also applies to (b) and (c).
+</p>
+</div>
+<pre class="r"><code>par(mfrow = c(2,2), mar = c(3.5,3.5,1,1), mgp = c(1.5,0.3,0), tcl = 0.25,
+    lend = &quot;square&quot;, ljoin = &quot;mitre&quot;, cex.main = 0.9, font.lab=2)
+plot(lda_rock_open$scaling[,1], lda_rock_open$scaling[,2], 
+     xlim = c(-1,2.5),  ylim = c(-1.3,1.3), 
+     xlab=&quot;Linear Discriminant [1]&quot;, ylab=&quot;Linear Discriminant [2]&quot;, 
+     main=&quot;Variable Coefficients [LD1, LD2]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2); abline(h=0,col=&quot;grey&quot;,lty=2)
+text(lda_rock_open$scaling[,1], lda_rock_open$scaling[,2], 
+     labels=names(Hallberg_clr)[11:21],
+     pos = 1, cex = 0.9, col = 2, offset=0.2)
+for(i in 1:NROW(lda_rock_open$scaling)){
+  arrows(0,0,lda_rock_open$scaling[i,1],lda_rock_open$scaling[i,2],
+         length = 0.1, col = 7) }
+mtext(&quot;(a)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)
+legend(&quot;bottomright&quot;, ncol = 1, legend=levels(Hallberg$Rock), 
+       col=c(1:3,6,8,9,11,12), pch=c(0:7), pt.lwd = 2,
+       bty=&quot;n&quot;, box.col=&quot;grey90&quot;, y.intersp = 1, 
+       title=&quot;Rock Type in (b) - (d)&quot;,
+       box.lwd=2, inset=0.02, pt.cex=1.5, cex=1.1)
+
+ldaPred_rock_open &lt;- predict(lda_rock_open)
+
+plot(ldaPred_rock_open$x[,1], ldaPred_rock_open$x[,2], 
+     col=c(1:3,6,8,9,11,12)[Hallberg$Rock],
+     pch=c(0:7)[Hallberg$Rock], lwd=2, 
+     cex = 1.5, 
+     main=&quot;Predictions for Observations [LD1, LD2]&quot;, 
+     xlab=&quot;Linear Discriminant [1]&quot;, ylab=&quot;Linear Discriminant [2]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2); abline(h=0,col=&quot;grey&quot;,lty=2)
+# text(ldaPred_rock_open$x[,1], ldaPred_rock_open$x[,2], labels=Hallberg$Rock, 
+#      col=c(2,4,6,3,12)[Hallberg$Rock], pos=1, offset=0.15, cex=0.65)
+mtext(&quot;(b)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)
+
+plot(ldaPred_rock_open$x[,1], ldaPred_rock_open$x[,3], 
+     col=c(1:3,6,8,9,11,12)[Hallberg$Rock],
+     pch=c(0:7)[Hallberg$Rock], lwd=2, 
+     cex = 1.5, 
+     main=&quot;Predictions for Observations [LD1, LD3]&quot;, 
+     xlab=&quot;Linear Discriminant [1]&quot;, ylab=&quot;Linear Discriminant [3]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2); abline(h=0,col=&quot;grey&quot;,lty=2)
+# text(ldaPred_rock_open$x[,1], ldaPred_rock_open$x[,3], labels=Hallberg$Rock, 
+#      col=c(2,4,6,3,12)[Hallberg$Rock], pos=1, offset=0.15, cex=0.65)
+mtext(&quot;(c)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)
+
+plot(ldaPred_rock_open$x[,2], ldaPred_rock_open$x[,4], 
+     col=c(1:3,6,8,9,11,12)[Hallberg$Rock],
+     pch=c(0:7)[Hallberg$Rock], lwd=2, 
+     cex = 1.5, 
+     main=&quot;Predictions for Observations [LD2, LD4]&quot;, 
+     xlab=&quot;Linear Discriminant [2]&quot;, ylab=&quot;Linear Discriminant [4]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2); abline(h=0,col=&quot;grey&quot;,lty=2)
+# text(ldaPred_rock_open$x[,2], ldaPred_rock_open$x[,3], labels=Hallberg$Rock, 
+#      col=c(2,4,6,3,12)[Hallberg$Rock], pos=1, offset=0.15, cex=0.65)
+mtext(&quot;(d)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt4-Hallberg_LDA_files/figure-html/plot%20LDA%20open-1.png" alt="\label{LDAopen}Linear discriminant analysis (LDA) plots for open (CLR-transformed) rock composition data: (a) variable coefficients in LD1-LD2 space, and predictions for observations in (b) LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD3 space. Legend in (a) applies to plots (b), (c), and (d)." width="70%" />
+<p class="caption">
+Linear discriminant analysis (LDA) plots for open (CLR-transformed) rock
+composition data: (a) variable coefficients in LD1-LD2 space, and
+predictions for observations in (b) LD1-LD2 space; (c) LD1-LD3 space;
+(d) LS2-LD3 space. Legend in (a) applies to plots (b), (c), and (d).
+</p>
+</div>
+<p>From the plots in and , we can see that the LDA models obtained are
+cetainly able to separate observations by the selected factor. Firstly,
+however, there is a lot of clustering of the predictor variables in (a),
+which may relate to spurious relationships between variables caused by
+compositional closure. This clustering is not so pronounced in (a),
+since the closure has been removed by CLR-transformation.</p>
+<p>Out of the combinations of LDA dimensions selected, the best
+separation is with LD2 <em>vs</em>. LD1, which is not surprising since
+these dimensions together account for about 95% of the between-groups
+variance – for both closed and open data. There is a lot of apparent
+overlap, but we can not see the true separation in only 2 dimensions.
+The LDA performed on open data may result in slightly clearer separation
+of samples by Rock category than LDA using closed data, but without a
+multidimensional view this is also hard to be sure about.</p>
+<p>One way that we can get a better idea about the usefulness of our
+classification models is to perform some validation. This involves
+‘training’ the model on a subset of our data, and trying to predict the
+category of a different subset using the training model. A later session
+will look at some ways we can do this.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>compositional_Pt3-Hclust.knit</title>
+
+<script src="compositional_Pt3-Hclust_files/header-attrs-2.14/header-attrs.js"></script>
+<script src="compositional_Pt3-Hclust_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="compositional_Pt3-Hclust_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="compositional_Pt3-Hclust_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="compositional_Pt3-Hclust_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="compositional_Pt3-Hclust_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="compositional_Pt3-Hclust_files/navigation-1.1/tabsets.js"></script>
+<link href="compositional_Pt3-Hclust_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="compositional_Pt3-Hclust_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="compositional_Pt3-Hclust_files/tabwid-1.0.0/tabwid.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<p><img src="compositional_Pt3-Hclust_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<p><em>We are using the same cities land-use dataset from the previous
+session, from Hu et al. (2021).</em></p>
+<div id="hierarchical-clustering" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Hierarchical
+clustering</h1>
+<p>Hierarchical clustering is another <em>unsupervised</em>
+classification method, which groups observations into successively
+larger clusters (i.e. hierarchically) depending on their
+<em>multivariate similarity or dissimilarity</em>. The procedure first
+requires generation of a distance matrix, following which the clustering
+procedure can begin.</p>
+<div id="create-dissimilarity-distance-matrix-for-closed-data"
+class="section level3" number="1.0.1">
+<h3><span class="header-section-number">1.0.1</span> Create
+dissimilarity (distance) matrix for closed data</h3>
+<pre class="r"><code>dataHC &lt;- na.omit(cities[,c(&quot;City&quot;,&quot;sType&quot;,&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+row.names(dataHC) &lt;- paste0(dataHC$City,&quot;(&quot;,dataHC$sType, seq(1,NROW(dataHC)),&quot;)&quot;)
+dataHC$City &lt;- NULL
+dataHC$sType &lt;- NULL
+cities_clos_diss &lt;- get_dist(dataHC, method = &quot;euclidean&quot;)
+cat(&quot;First 8 rows and first 4 columns of distance matrix:\n&quot;)
+round(as.matrix(cities_clos_diss)[1:8, 1:4], 0)</code></pre>
+<pre><code>## First 8 rows and first 4 columns of distance matrix:
+##                New York(CO1) Sao Paulo(CO2) Shanghai(I3) Beijing(CO4)
+## New York(CO1)              0            670          798           73
+## Sao Paulo(CO2)           670              0         1221          719
+## Shanghai(I3)             798           1221            0          786
+## Beijing(CO4)              73            719          786            0
+## Jakarta(C5)             1201            682         1384         1238
+## Guangzhou(C6)            959            789          869          982
+## Melbourne(C7)            845            431         1113          875
+## Paris(O8)                470           1070          850          398</code></pre>
+</div>
+<div id="create-dissimilarity-distance-matrix-for-open-data"
+class="section level3" number="1.0.2">
+<h3><span class="header-section-number">1.0.2</span> Create
+dissimilarity (distance) matrix for open data</h3>
+<pre class="r"><code>dataHC &lt;- na.omit(cities_clr[,c(&quot;City&quot;,&quot;sType&quot;,&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+row.names(dataHC) &lt;- paste0(dataHC$City,&quot;(&quot;,dataHC$sType, seq(1,NROW(dataHC)),&quot;)&quot;)
+dataHC$City &lt;- NULL
+dataHC$sType &lt;- NULL
+cities_open_diss &lt;- get_dist(dataHC, method = &quot;euclidean&quot;)
+cat(&quot;First 8 rows and first 4 columns of distance matrix:\n&quot;)
+round(as.matrix(cities_open_diss)[1:8, 1:4], 2)</code></pre>
+<pre><code>## First 8 rows and first 4 columns of distance matrix:
+##                New York(CO1) Sao Paulo(CO2) Shanghai(I3) Beijing(CO4)
+## New York(CO1)           0.00           0.87         1.70         0.11
+## Sao Paulo(CO2)          0.87           0.00         2.43         0.93
+## Shanghai(I3)            1.70           2.43         0.00         1.69
+## Beijing(CO4)            0.11           0.93         1.69         0.00
+## Jakarta(C5)             4.21           3.72         4.47         4.28
+## Guangzhou(C6)           1.84           1.72         2.06         1.92
+## Melbourne(C7)           1.40           1.01         2.26         1.47
+## Paris(O8)               1.08           1.79         1.73         0.98</code></pre>
+<p>The distance matrix, part of which (the ‘top-left’ corner) is shown
+here, shows the distance in terms of the measurement variables between
+any pair of points. In this case the variables are
+“Compact”,“Open”,“Lightweight”,and “Industry”, so the resulting
+4-dimensional space is hard to visualise, but for <em>Euclidean
+distance</em> used here it represents the equivalent of straight-line
+distance between each observation, each defined by a 4-dimensional
+vector. There are several other ways to define distance (or
+<em>(dis)similarity</em>) which are used in various disciplines, such as
+Manhattan, Jaccard, Bray-Curtis, Mahalonobis (and others based on
+covariance/correlation), or Canberra. [Try running
+<strong>?factoextra::dist</strong> and read the information for ‘method’
+for additional information.]</p>
+</div>
+<div id="perform-hierarchical-clustering-for-closed-data"
+class="section level3" number="1.0.3">
+<h3><span class="header-section-number">1.0.3</span> Perform
+hierarchical clustering for closed data</h3>
+<p>The hierarchical clustering algorithm <strong>(1)</strong> assigns
+each observation to its own cluster, each containing only one
+observation. So, at the beginning, the distances (or (dis)similarities)
+between the clusters is the same as the distances between the items they
+contain. <strong>(2)</strong> The closest pair of clusters is then
+computed, and this pair is merged into a single cluster.
+<strong>(3)</strong> Distances are re-calculated between the new cluster
+and each of the old clusters, and steps 2 and 3 are repeated until all
+items are clustered into a single cluster. Finally, now the algorithm
+has generated a complete hierarchical tree, we can split the
+observations into <em>k</em> clusters by separating them at the
+<em>k</em>-1 longest branches (for our closed data, see ).</p>
+<p>Since the clusters are a group of points rather than single points,
+there are several ways of combining the observations into clusters – run
+<strong>?stats::hclust</strong> under ‘method’ for more information.</p>
+<pre class="r"><code>cities_clos_hc &lt;- hclust(cities_clos_diss, method = &quot;ward.D2&quot;)
+cities_open_hc &lt;- hclust(cities_open_diss, method = &quot;ward.D2&quot;)
+par(mfrow=c(2,1), mgp = c(1.7,0.3,0), tcl = 0.25)
+plot(cities_clos_hc, cex=0.8, main=&quot;&quot;); mtext(&quot;(a)&quot;, adj = 0.05)
+abline(h = c(870,1050,1500), col = c(&quot;blue2&quot;,&quot;purple&quot;,&quot;red3&quot;), lty = c(2,5,1))
+# text(3,870, pos=3, labels=&quot;Cut for 5 clusters&quot;, col = &quot;blue2&quot;, offset = 0.2)
+text(c(3,3,3),c(870,1050,1500), pos=3, col = c(&quot;blue2&quot;,&quot;purple&quot;,&quot;red3&quot;), offset = 0.2, 
+     labels=c(&quot;Cut for 5 clusters&quot;,&quot;Cut for 4 clusters&quot;,&quot;Cut for 3 clusters&quot;))
+plot(cities_open_hc, cex=0.8, main=&quot;&quot;); mtext(&quot;(b)&quot;, adj = 0.05)
+abline(h = c(3.7,8,10), col = c(&quot;blue2&quot;,&quot;purple&quot;,&quot;red3&quot;), lty = c(2,5,1))
+# text(3,870, pos=3, labels=&quot;Cut for 5 clusters&quot;, col = &quot;blue2&quot;, offset = 0.2)
+text(c(38,38,38),c(3.7,8,10), pos=3, col = c(&quot;blue2&quot;,&quot;purple&quot;,&quot;red3&quot;), offset = 0.2, 
+     labels=c(&quot;Cut for 5 clusters&quot;,&quot;Cut for 4 clusters&quot;,&quot;Cut for 3 clusters&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt3-Hclust_files/figure-html/hierarchical%20clustering%20closed-1.png" alt="\label{hclustComp}Hierarchical cluster dendrogram for (a) compositionally closed and (b) open (CLR-transformed) urban land-use data." width="960" />
+<p class="caption">
+Hierarchical cluster dendrogram for (a) compositionally closed and (b)
+open (CLR-transformed) urban land-use data.
+</p>
+</div>
+<p>The plots in are hierarchical clustering ‘trees’, or
+<em>dendrograms</em>. We can see that the lowest order clusters, joined
+above the variable names, contain two observations (cities, in this
+dataset), reflecting the first iteration of Step 2 in the clustering
+algorithm described above. As we look higher in the dendrogram, we see
+additional observations or clusters grouped together, until at the
+highest level a single grouping exists. ‘Cutting’ the dendrogram at
+different heights will result in different numbers of clusters; the
+lower the cut level, the more clusters we will have. For both the closed
+and open data we have shown cuts in resulting in 3, 4, or 5 clusters.
+There are numerous ways to decide where to make the cut; see Kassambara
+(2018) (<a href="https://shorturl.at/cntxH"
+class="uri">https://shorturl.at/cntxH</a> ) for some of these.</p>
+</div>
+<div id="assess-the-validity-of-cluster-trees" class="section level3"
+number="1.0.4">
+<h3><span class="header-section-number">1.0.4</span> Assess the validity
+of cluster trees</h3>
+<p><strong>For closed data:</strong></p>
+<pre class="r"><code>cities_clos_coph &lt;- cophenetic(cities_clos_hc)
+cat(&quot;Correlation coefficient r =&quot;,cor(cities_clos_diss,cities_clos_coph),&quot;\n&quot;)
+cat(&quot;\nRule-of-thumb:\n&quot;,
+ &quot;Cluster tree represents actual distance matrix accurately enough if r&gt;0.75\n&quot;)</code></pre>
+<pre><code>## Correlation coefficient r = 0.8871279 
+## 
+## Rule-of-thumb:
+##  Cluster tree represents actual distance matrix accurately enough if r&gt;0.75</code></pre>
+<p><strong>For open data:</strong></p>
+<pre class="r"><code>cities_open_coph &lt;- cophenetic(cities_open_hc)
+cat(&quot;Correlation coefficient r =&quot;,cor(cities_open_diss,cities_open_coph),&quot;\n&quot;)</code></pre>
+<pre><code>## Correlation coefficient r = 0.7820011</code></pre>
+<p>The <em>cophenetic distance</em> may be considered a ’back
+calculation of the distance matrix based on the dendrogram (run
+<strong>?cophenetic</strong> for more details). We then calculate a
+correlation coefficient between the actual distance matrix and the
+cophenetic distance matrix. If the correlation is great enough
+(nominally &gt; 0.75), we assume that the dendrogram adequately
+represents our data. (If the actual <em>vs</em>. cophenetic correlation
+is too low, we may want to choose another distance measure, or a
+different hierarchical clustering algorithm.) Our results show that the
+dendrograms for both closed and open data are adequate representations
+of the applicable distance matrices.</p>
+</div>
+<div id="find-the-optimum-number-of-clusters" class="section level3"
+number="1.0.5">
+<h3><span class="header-section-number">1.0.5</span> Find the optimum
+number of clusters</h3>
+<p>We did a similar analysis on the same datasets (closed and open
+cities land-use) for K-means clustering, estimating the optimum number
+of clusters using the ‘weighted sum-of-squares’ (wss) method. In we
+estimate the best cluster numbers using another common method, the
+<em>silhouette</em> method.</p>
+<pre class="r"><code>#
+require(factoextra)
+data0 &lt;- na.omit(cities[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+nclus_clos &lt;- fviz_nbclust(data0, kmeans, method = &quot;silhouette&quot;, verbose = F) +
+  labs(title=&quot;&quot;)
+data0 &lt;- na.omit(cities_clr[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+nclus_clr &lt;- fviz_nbclust(data0, kmeans, method = &quot;silhouette&quot;, verbose = F) +
+  labs(title=&quot;&quot;)
+ggarrange(nclus_clos,nclus_clr,ncol = 2,nrow = 1, 
+          labels = c(&quot;(a) closed&quot;,&quot;(b) open (clr)&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt3-Hclust_files/figure-html/assess%20optimum%20clusters%20for%20closed%20and%20open%20data-1.png" alt="\label{nClustComp}Estmation of the optimum number of clusters by the silhouette method for (a) compositionally closed and (b) open (CLR-transformed) urban land-use data." width="75%" />
+<p class="caption">
+Estmation of the optimum number of clusters by the silhouette method for
+(a) compositionally closed and (b) open (CLR-transformed) urban land-use
+data.
+</p>
+</div>
+</div>
+<div id="cut-dendrograms-into-clusters" class="section level3"
+number="1.0.6">
+<h3><span class="header-section-number">1.0.6</span> Cut dendrograms
+into clusters</h3>
+<p>This was illustrated in above, and we now investigate the clustering
+in more detail, assuming 4 clusters for both closed and open data.</p>
+<p><strong>Clusters for closed data</strong></p>
+<pre class="r"><code>cities_clos_grp &lt;- cutree(cities_clos_hc, k = 4)
+outtable &lt;- data.frame(Cluster = seq(1,nlevels(as.factor(cities_clos_grp))),
+                       Cities = rep(&quot;nil&quot;,nlevels(as.factor(cities_clos_grp))),
+                       Freq = rep(0,nlevels(as.factor((cities_clos_grp)))))
+tccg &lt;- data.frame(table(cities_clos_grp))
+for (i in 1:nlevels(as.factor(cities_clos_grp))) {
+  outtable[i,1] &lt;- paste(&quot;Cluster&quot;,i)
+  outtable[i,2] &lt;- paste(names(which(cities_clos_grp==i)), 
+                         collapse = &quot; &quot;)
+  outtable[i,3] &lt;- as.numeric(tccg[i,2])}
+ft &lt;- flextable(outtable)
+ft &lt;- theme_zebra(ft,odd_header = &quot;#D0E0FF&quot;)
+ft &lt;- border_outer(ft, border=BorderDk, part = &quot;all&quot;)
+ft &lt;- border_inner_v(ft, border=BorderLt, part=&quot;all&quot;)
+ft %&gt;% width(j=1:3, width=c(1,5,1), unit = &quot;in&quot;)</code></pre>
+<template id="805b9df1-d401-4d8d-84de-ec4cdb4118fd"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-5c0bcc36{}.cl-5c002bf6{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5c002c14{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5c004bcc{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-5c004bd6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-5c008d30{width:72pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d3a{width:72pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d3b{width:360pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d3c{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d44{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d45{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d4e{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d4f{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d58{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d59{width:360pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d62{width:72pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c008d63{width:72pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-5c0bcc36'>
+<caption class>
+<p>Cities in each hierarchical cluster from analysis of compsitionally
+closed data.</p>
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-5c008d62"><p class="cl-5c004bcc"><span class="cl-5c002bf6">Cluster</span></p></td><td class="cl-5c008d59"><p class="cl-5c004bcc"><span class="cl-5c002bf6">Cities</span></p></td><td class="cl-5c008d63"><p class="cl-5c004bd6"><span class="cl-5c002bf6">Freq</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-5c008d30"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cluster 1</span></p></td><td class="cl-5c008d3b"><p class="cl-5c004bcc"><span class="cl-5c002c14">New York(CO1) Shanghai(I3) Beijing(CO4) Paris(O8) London(O9) Moscow(O10)</span></p></td><td class="cl-5c008d3a"><p class="cl-5c004bd6"><span class="cl-5c002c14">6</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c008d44"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cluster 2</span></p></td><td class="cl-5c008d45"><p class="cl-5c004bcc"><span class="cl-5c002c14">Sao Paulo(CO2) Jakarta(C5) Guangzhou(C6) Melbourne(C7)</span></p></td><td class="cl-5c008d3c"><p class="cl-5c004bd6"><span class="cl-5c002c14">4</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c008d30"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cluster 3</span></p></td><td class="cl-5c008d3b"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cairo(C11) Sydney(CO12) Istanbul(CO14) Santiago de Chile(C20) Vancouver(C24) Tehran(C25) San Francisco(C28) Rio de Janeiro(C29) Islamabad(OL30) Lisbon(CO33) Kyoto(C37)</span></p></td><td class="cl-5c008d3a"><p class="cl-5c004bd6"><span class="cl-5c002c14">11</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c008d4f"><p class="cl-5c004bcc"><span class="cl-5c002c14">Cluster 4</span></p></td><td class="cl-5c008d4e"><p class="cl-5c004bcc"><span class="cl-5c002c14">Nanjing(I13) Milan(I15) Washington DC(O16) Qingdao(I17) Wuhan(I18) Berlin(O19) Cape Town(OL21) Mumbai(OL22) Madrid(O23) Changsha(I26) Rome(O27) Amsterdam(I31) Nairobi(OL32) Munich(O34) Dongying(O35) Cologne(O36) Shenzhen(I38) Zurich(O39) Hong Kong(CO40)</span></p></td><td class="cl-5c008d58"><p class="cl-5c004bd6"><span class="cl-5c002c14">19</span></p></td></tr></tbody></table></div></template>
+<div class="flextable-shadow-host" id="20e216ee-ef53-41ba-969c-67a882826e4f"></div>
+<script>
+var dest = document.getElementById("20e216ee-ef53-41ba-969c-67a882826e4f");
+var template = document.getElementById("805b9df1-d401-4d8d-84de-ec4cdb4118fd");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script>
+
+<pre class="r"><code>cities_open_grp &lt;- cutree(cities_open_hc, k = 4)
+tccg &lt;- data.frame(table(cities_open_grp))
+outtable &lt;- data.frame(Cluster = seq(1,nlevels(as.factor(cities_open_grp))),
+                       Cities = rep(&quot;nil&quot;,nlevels(as.factor(cities_open_grp))),
+                       Freq = rep(0,nlevels(as.factor((cities_open_grp)))))
+for (i in 1:nlevels(as.factor(cities_open_grp))) {
+  outtable[i,1] &lt;- paste(&quot;Cluster&quot;,i)
+  outtable[i,2] &lt;- paste(names(which(cities_open_grp==i)), 
+                         collapse = &quot; &quot;)
+  outtable[i,3] &lt;- as.numeric(tccg[i,2])}
+ft &lt;- flextable(outtable)
+ft &lt;- theme_zebra(ft,odd_header = &quot;#D0E0FF&quot;)
+ft &lt;- border_outer(ft, border=BorderDk, part = &quot;all&quot;)
+ft &lt;- border_inner_v(ft, border=BorderLt, part=&quot;all&quot;)
+ft %&gt;% width(j=1:3, width=c(1,5,1), unit = &quot;in&quot;)</code></pre>
+<template id="0b48e820-9be1-4f83-bece-ca9d3f8a0f2c"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-5c2e742a{}.cl-5c22c01c{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5c22c03a{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5c22de44{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-5c22de4e{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-5c23239a{width:72pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323a4{width:72pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323ae{width:360pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323b8{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323b9{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323ba{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323c2{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323c3{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323cc{width:72pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323cd{width:360pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323ce{width:72pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-5c2323d6{width:72pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-5c2e742a'>
+<caption class>
+<p>Cities in each hierarchical cluster from analysis of open
+(CLR-transformed) data.</p>
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-5c2323ce"><p class="cl-5c22de44"><span class="cl-5c22c01c">Cluster</span></p></td><td class="cl-5c2323cd"><p class="cl-5c22de44"><span class="cl-5c22c01c">Cities</span></p></td><td class="cl-5c2323d6"><p class="cl-5c22de4e"><span class="cl-5c22c01c">Freq</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-5c23239a"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cluster 1</span></p></td><td class="cl-5c2323ae"><p class="cl-5c22de44"><span class="cl-5c22c03a">New York(CO1) Sao Paulo(CO2) Beijing(CO4) Jakarta(C5) Guangzhou(C6) Melbourne(C7) Cairo(C11) Sydney(CO12) Istanbul(CO14) Santiago de Chile(C20) Vancouver(C24) Tehran(C25) San Francisco(C28) Rio de Janeiro(C29) Lisbon(CO33) Kyoto(C37) Hong Kong(CO40)</span></p></td><td class="cl-5c2323a4"><p class="cl-5c22de4e"><span class="cl-5c22c03a">17</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c2323b9"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cluster 2</span></p></td><td class="cl-5c2323ba"><p class="cl-5c22de44"><span class="cl-5c22c03a">Shanghai(I3) Paris(O8) London(O9) Moscow(O10) Nanjing(I13) Milan(I15) Washington DC(O16) Qingdao(I17) Wuhan(I18) Berlin(O19) Madrid(O23) Changsha(I26) Rome(O27) Amsterdam(I31) Munich(O34) Dongying(O35) Shenzhen(I38) Zurich(O39)</span></p></td><td class="cl-5c2323b8"><p class="cl-5c22de4e"><span class="cl-5c22c03a">18</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c23239a"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cluster 3</span></p></td><td class="cl-5c2323ae"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cape Town(OL21) Mumbai(OL22) Islamabad(OL30) Nairobi(OL32)</span></p></td><td class="cl-5c2323a4"><p class="cl-5c22de4e"><span class="cl-5c22c03a">4</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-5c2323c3"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cluster 4</span></p></td><td class="cl-5c2323c2"><p class="cl-5c22de44"><span class="cl-5c22c03a">Cologne(O36)</span></p></td><td class="cl-5c2323cc"><p class="cl-5c22de4e"><span class="cl-5c22c03a">1</span></p></td></tr></tbody></table></div></template>
+<div class="flextable-shadow-host" id="875d8939-8c92-4a18-ad7d-002353bd5530"></div>
+<script>
+var dest = document.getElementById("875d8939-8c92-4a18-ad7d-002353bd5530");
+var template = document.getElementById("0b48e820-9be1-4f83-bece-ca9d3f8a0f2c");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script>
+
+<p>The decision to cut the dendrograms into 4 clusters (<em>i.e</em>. at
+a level which intersects exactly 4 ‘branches’) is somewhat subjective,
+but could be based on other information such as K-means clustering, PCA,
+or pre-existing knowledge of the data.</p>
+<p>A diagram comparing the clusters in cut dendrograms for closed and
+open data is shown below, in .</p>
+</div>
+<div id="plot-dendrograms-comparing-closed-and-open-data-with-cuts"
+class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Plot dendrograms
+comparing closed and open data with cuts</h2>
+<pre class="r"><code>gg_cutden_clos &lt;- fviz_dend(cities_clos_hc, k = 4, # Cut in five groups
+          main = &quot;&quot;, cex = 0.7, # label size
+          k_colors = c(&quot;gray40&quot;,&quot;red3&quot;, &quot;blue2&quot;, &quot;purple&quot;),
+          color_labels_by_k = TRUE, # color labels by groups
+          rect = TRUE, # Add rectangle around groups
+          labels_track_height = 1320 # adjust low margin for long labels
+)
+gg_cutden_open &lt;- fviz_dend(cities_open_hc, k = 4, # Cut in five groups
+          main = &quot;&quot;, cex = 0.7, # label size
+          k_colors = c(&quot;gray40&quot;,&quot;red3&quot;, &quot;blue2&quot;, &quot;purple&quot;),
+          color_labels_by_k = TRUE, # color labels by groups
+          rect = TRUE, # Add rectangle around groups
+          labels_track_height = 10 # adjust low margin for long labels
+)
+ggarrange(gg_cutden_clos,gg_cutden_open, nrow = 2, 
+          labels = c(&quot;(a) closed&quot;,&quot;(b) open (CLR)&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt3-Hclust_files/figure-html/plot%20cut%20dendrogram%20open-1.png" alt="\label{hclustCutComp}Hierarchical cluster dendrograms for (a) closed and (b) CLR-transformed (open) urban land-use data, showing clusters within dashed rectangles." width="960" />
+<p class="caption">
+Hierarchical cluster dendrograms for (a) closed and (b) CLR-transformed
+(open) urban land-use data, showing clusters within dashed rectangles.
+</p>
+</div>
+<p>This session has shown us how to apply the unsupervised
+classification method, <strong>hierarchical clustering</strong> to a
+dataset and observe the effects of removing compositional closure.
+Different clustering, and potentially even different numbers of
+clusters, result from the closed and open (CLR-transformed) versions of
+our cities land-use data.</p>
+</div>
+<div id="references-and-r-packages" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> References and R
+Packages</h2>
+<p>Hu, J., Wang, Y., Taubenböck, H., Zhu, X.X. (2021). Land consumption
+in cities: A comparative study across the globe. <em>Cities</em>,
+<strong>113</strong>: 103163, <a
+href="https://doi.org/10.1016/j.cities.2021.103163"
+class="uri">https://doi.org/10.1016/j.cities.2021.103163</a>.</p>
+<p>Kassambara, A. (2018). <em>Determining The Optimal Number Of
+Clusters: 3 Must</em> <em>Know Methods</em>. Datanovia, Montpellier,
+France. (<a href="https://shorturl.at/cntxH"
+class="uri">https://shorturl.at/cntxH</a>)</p>
+<p>Kassambara, A. and Mundt, F. (2020). <em>factoextra: Extract and
+Visualize the</em> <em>Results of Multivariate Data Analyses</em>. R
+package version 1.0.7. <a
+href="https://CRAN.R-project.org/package=factoextra"
+class="uri">https://CRAN.R-project.org/package=factoextra</a></p>
+<p>Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M., Hornik,
+K.(2021). <em>cluster: Cluster Analysis Basics and Extensions</em>. R
+package version 2.1.2. <a
+href="https://CRAN.R-project.org/package=cluster"
+class="uri">https://CRAN.R-project.org/package=cluster</a></p>
+<p>Reimann, C., Filzmoser, P., Garrett, R. G., &amp; Dutter, R. (2008).
+<em>Statistical Data Analysis Explained: Applied Environmental
+Statistics with R</em> (First ed.). John Wiley &amp; Sons, Chichester,
+UK.</p>
+<p>Venables, W. N. &amp; Ripley, B. D. (2002) <em>Modern Applied
+Statistics with S</em> (<strong>MASS</strong>). Fourth Edition.
+Springer, New York. ISBN 0-387-95457-0. <a
+href="http://www.stats.ox.ac.uk/pub/MASS4/"
+class="uri">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
+<p>Wickham, H. (2019). <em>stringr: Simple, Consistent Wrappers for
+Common String</em> <em>Operations</em>. R package version 1.4.0. <a
+href="https://CRAN.R-project.org/package=stringr"
+class="uri">https://CRAN.R-project.org/package=stringr</a></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>compositional_Pt7-usgs_LDA-on-PCA.knit</title>
+
+<script src="compositional_Pt7-usgs_LDA-on-PCA_files/header-attrs-2.14/header-attrs.js"></script>
+<script src="compositional_Pt7-usgs_LDA-on-PCA_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="compositional_Pt7-usgs_LDA-on-PCA_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="compositional_Pt7-usgs_LDA-on-PCA_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="compositional_Pt7-usgs_LDA-on-PCA_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="compositional_Pt7-usgs_LDA-on-PCA_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="compositional_Pt7-usgs_LDA-on-PCA_files/navigation-1.1/tabsets.js"></script>
+<link href="compositional_Pt7-usgs_LDA-on-PCA_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="compositional_Pt7-usgs_LDA-on-PCA_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="compositional_Pt7-usgs_LDA-on-PCA_files/tabwid-1.0.0/tabwid.css" rel="stylesheet" />
+<link href="compositional_Pt7-usgs_LDA-on-PCA_files/tabwid-1.0.0/scrool.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<p><img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<p>We are using a curated version of a whole rock composition dataset
+from The US Geological Survey (<a
+href="https://mrdata.usgs.gov/ngdb/rock/"
+class="uri">https://mrdata.usgs.gov/ngdb/rock/</a>). This mostly
+contains data for rock samples from the USA, with a small proportion of
+data from other geographical regions ().</p>
+<pre class="r"><code>require(ggplot2); require(maps)
+mp &lt;- NULL
+mapWorld &lt;- borders(&quot;world&quot;, colour=&quot;gray&quot;, fill=&quot;gray&quot;) # create a layer of borders
+ggplot() + mapWorld + 
+  geom_point(aes(x=Longitude, y=Latitude,color=Country, shape=Country), 
+                     data=usgs, size=2, line=2) +
+  scale_shape_manual(values=c(rep(c(15,17,18,19),4),15,3,17,18,19)) + 
+  scale_colour_manual(values = rainbow(21, v=0.75, end=0.85)) + 
+  xlim(-180,180) + theme_minimal()</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/sample%20location%20map-1.png" alt="\label{sampleMap}Location maps for samples in the USGS National Geochemical Database subset used in this guide." width="90%" />
+<p class="caption">
+Location maps for samples in the USGS National Geochemical Database
+subset used in this guide.
+</p>
+</div>
+<template id="d6a0e973-2f27-4b31-bc81-1cda7469cc7f"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-dd28cfb0{}.cl-dd1c8bb0{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-dd1c8be2{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-dd1cad84{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-dd1cad85{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-dd1d13f0{width:108pt;height:10.8pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d13f1{width:180pt;height:10.8pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d13fa{width:144pt;height:10.8pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1404{width:180pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1418{width:108pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1419{width:144pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d142c{width:144pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1436{width:108pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1437{width:180pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1438{width:144pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1440{width:108pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d144a{width:180pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-dd28cfb0'>
+<caption class>
+<p>Numbers of samples in the USGS data by rock category and general
+type.</p>
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-dd1d1438"><p class="cl-dd1cad84"><span class="cl-dd1c8bb0">Category</span></p></td><td class="cl-dd1d1440"><p class="cl-dd1cad85"><span class="cl-dd1c8bb0">n</span></p></td><td class="cl-dd1d144a"><p class="cl-dd1cad84"><span class="cl-dd1c8bb0">Type</span></p></td></tr></thead><tbody><tr><td class="cl-dd1d13fa"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">andesite</span></p></td><td class="cl-dd1d13f0"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">950</span></p></td><td class="cl-dd1d13f1"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">intermediate</span></p></td></tr><tr><td class="cl-dd1d1419"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">basalt</span></p></td><td class="cl-dd1d1418"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">1,082</span></p></td><td class="cl-dd1d1404"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">mafic</span></p></td></tr><tr><td class="cl-dd1d13fa"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">dacite</span></p></td><td class="cl-dd1d13f0"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">983</span></p></td><td class="cl-dd1d13f1"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">intermediate</span></p></td></tr><tr><td class="cl-dd1d1419"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">gabbro</span></p></td><td class="cl-dd1d1418"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">471</span></p></td><td class="cl-dd1d1404"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">mafic</span></p></td></tr><tr><td class="cl-dd1d13fa"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">granite</span></p></td><td class="cl-dd1d13f0"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">988</span></p></td><td class="cl-dd1d13f1"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">felsic</span></p></td></tr><tr><td class="cl-dd1d1419"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">peridotite</span></p></td><td class="cl-dd1d1418"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">62</span></p></td><td class="cl-dd1d1404"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">ultramafic</span></p></td></tr><tr><td class="cl-dd1d13fa"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">pyroxenite</span></p></td><td class="cl-dd1d13f0"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">105</span></p></td><td class="cl-dd1d13f1"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">ultramafic</span></p></td></tr><tr><td class="cl-dd1d142c"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">rhyolite</span></p></td><td class="cl-dd1d1436"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">1,339</span></p></td><td class="cl-dd1d1437"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">felsic</span></p></td></tr></tbody></table></div></template>
+<div class="flextable-shadow-host" id="7ec6f518-8863-45cd-aa15-6393bc3fef86"></div>
+<script>
+var dest = document.getElementById("7ec6f518-8863-45cd-aa15-6393bc3fef86");
+var template = document.getElementById("d6a0e973-2f27-4b31-bc81-1cda7469cc7f");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script>
+
+<p>We note from Table 7.1 that there are two rock categories in each
+general type. This may cause some interesting classification issues
+based on elemental composition, since, within each type, the categories
+may have similar ranges of element concentrations, but differ in texture
+(the size of mineral crystals). Since we don’t have information in our
+data on rock texture, our supervised classification may make some
+mistakes! Let’s see . . .</p>
+<div
+id="lda-pca-linear-discriminant-analysis-using-principal-components"
+class="section level1" number="1">
+<h1><span class="header-section-number">1</span> LDA-PCA – Linear
+Discriminant Analysis using Principal Components</h1>
+<div id="calculation-of-principal-components" class="section level2"
+number="1.1">
+<h2><span class="header-section-number">1.1</span> Calculation of
+Principal Components</h2>
+<pre class="r"><code>#
+# the USGS data subset we are using has no missing values, so
+# we can use it for PCA without creating a temporary data frame
+pca_usgs &lt;- prcomp(usgs_clr[,9:33], scale. = TRUE)
+pca_usgs$rot[,1:5]
+cat(&quot;...\n\nComponent Variances - CLR-transformed (open) data\n&quot;)
+pca_usgs$sdev^2
+cat(&quot;___\n\nProportions of variance explained by each component&quot;,
+    &quot;\nCLR-transformed (open) data\n&quot;)
+round(pca_usgs$sdev^2/sum(pca_usgs$sdev^2),3)
+cat(&quot;___\n\nCumulative proportions of variance explained by each component&quot;,
+    &quot;\nCLR-transformed (open) data\n&quot;)
+cumsum(round(pca_usgs$sdev^2/sum(pca_usgs$sdev^2),3))</code></pre>
+<pre><code>##               PC1         PC2         PC3         PC4          PC5
+## SiO2   0.22441772  0.16314267 -0.29116599 -0.03293276  0.050664154
+## Al2O3  0.09519424  0.26326023 -0.33224286 -0.18446047 -0.030442795
+## Fe2O3 -0.30824524  0.23037578  0.09120916  0.08288096 -0.071541751
+## MnO   -0.25259538  0.25195859  0.04398942  0.02590848 -0.131167895
+## MgO   -0.33013622  0.14409306  0.18997381  0.06894058 -0.038726259
+## CaO   -0.29383453  0.20150800  0.07692995 -0.05826970 -0.075700546
+## Na2O   0.07536800  0.24156263 -0.31771510 -0.18913397 -0.057818625
+## K2O    0.27717808  0.08170440 -0.31655092 -0.12802965  0.065417030
+## P2O5  -0.15177189  0.28434631 -0.06095957 -0.01555390  0.025274624
+## TiO2  -0.26295878  0.24726082  0.07717517  0.06227641 -0.005402602
+## CO2    0.01295288  0.05209347 -0.08817174 -0.09452844  0.042521465
+## H2O    0.05018342  0.11181156 -0.16081464 -0.08772350  0.133905535
+## As     0.10051001  0.03660281 -0.15228781  0.45216001  0.055063866
+## Ba     0.17346618  0.07948230  0.25119636 -0.04538217  0.485967948
+## Ce     0.29380069  0.04317886  0.31149117 -0.09684529 -0.270595181
+## Co    -0.12541118 -0.33701207 -0.08779644 -0.07265540 -0.085805001
+## Cr    -0.16979207 -0.27668319 -0.18864720 -0.15092902 -0.096081611
+## Cu    -0.06044299 -0.28692372 -0.03553343  0.28791523  0.132227279
+## La     0.30025961  0.04433938  0.31574559 -0.08421672 -0.256349714
+## Ni    -0.14570275 -0.34889273 -0.16605722 -0.09195856 -0.148351817
+## Pb     0.21881757  0.04933135  0.02259789  0.48688629 -0.067463137
+## Sr     0.08191374 -0.03559842  0.31192535 -0.17314076  0.510736969
+## V     -0.12479813 -0.28628160  0.03576517 -0.29653196  0.054789996
+## Y      0.22111422  0.01466340  0.21856503 -0.16364035 -0.472067903
+## Zn     0.06233663 -0.11125207 -0.07819738  0.39006613 -0.115973423
+## ...
+## 
+## Component Variances - CLR-transformed (open) data
+##  [1] 6.035282e+00 4.248566e+00 2.689857e+00 1.973202e+00 1.394249e+00
+##  [6] 1.271280e+00 1.113892e+00 9.200516e-01 8.279401e-01 6.629787e-01
+## [11] 5.720578e-01 5.171232e-01 4.503429e-01 4.199205e-01 3.416412e-01
+## [16] 3.042988e-01 2.723735e-01 2.206191e-01 1.942085e-01 1.619423e-01
+## [21] 1.480727e-01 1.430509e-01 8.978811e-02 2.726189e-02 5.880358e-30
+## ___
+## 
+## Proportions of variance explained by each component 
+## CLR-transformed (open) data
+##  [1] 0.241 0.170 0.108 0.079 0.056 0.051 0.045 0.037 0.033 0.027 0.023 0.021
+## [13] 0.018 0.017 0.014 0.012 0.011 0.009 0.008 0.006 0.006 0.006 0.004 0.001
+## [25] 0.000
+## ___
+## 
+## Cumulative proportions of variance explained by each component 
+## CLR-transformed (open) data
+##  [1] 0.241 0.411 0.519 0.598 0.654 0.705 0.750 0.787 0.820 0.847 0.870 0.891
+## [13] 0.909 0.926 0.940 0.952 0.963 0.972 0.980 0.986 0.992 0.998 1.002 1.003
+## [25] 1.003</code></pre>
+<div id="visualize-pca-scree-plot-eigenvalues" class="section level3"
+number="1.1.1">
+<h3><span class="header-section-number">1.1.1</span> Visualize PCA scree
+plot (eigenvalues)</h3>
+<p>The scree plot for this PCA in shows 7 components with variances
+(eigenvalues) greater than 1.</p>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/scree%20plots-1.png" alt="\label{screeplot}PCA scree plots for whole-rock composition data, corrected for closure using CLR-transformation." width="50%" />
+<p class="caption">
+PCA scree plots for whole-rock composition data, corrected for closure
+using CLR-transformation.
+</p>
+</div>
+</div>
+<div id="visualize-pca-ordination" class="section level3"
+number="1.1.2">
+<h3><span class="header-section-number">1.1.2</span> Visualize PCA
+ordination</h3>
+<p>We have a lot of observations (rows), so to plot the component
+loadings over the cloud of points, we draw the biplot manually with
+manual scaling of observation scores. The ‘<strong>shadowtext</strong>’
+function is from the <strong>TeachingDemos</strong> R package. We could
+also use some of the PCA presentation functions in the
+<strong>factoextra</strong> package.</p>
+<pre class="r"><code>require(car) # for data ellipses (see Fig 1.4)
+par(mfrow=c(1,1), mar = c(3,3,3,3), oma = c(0,0,0,0), 
+    mgp=c(1.6,0.3,0), tcl = 0.25, font.lab=2,
+    lend = &quot;square&quot;, ljoin = &quot;mitre&quot;)
+# clrz &lt;- matrix(rainbow(20,v=0.8,end=0.8,alpha=0.4),ncol=10,byrow = T)
+# attributes(clrz) &lt;- NULL
+palette(c(&quot;black&quot;,c(&quot;#104E8B80&quot;, &quot;#A0522D80&quot;, &quot;#36648B80&quot;, &quot;#8B5A2B80&quot;, 
+          &quot;#CD000080&quot;, &quot;#A020F080&quot;, &quot;#7D26CD80&quot;, &quot;#CD4F3980&quot;),&quot;white&quot;))
+
+# choose components and set scaling factor (sf)
+v1 &lt;- 1; v2 &lt;- 2; sf &lt;- 0.06
+
+plot(pca_usgs$rot[,v1]*1.5, pca_usgs$rot[,v2]*1.6, 
+       type = &quot;n&quot;, xlim=c(-0.7,0.55), ylim = c(-0.4,0.4), 
+       xlab = paste0(&quot;Scaled PC&quot;,v1,&quot; Component Loadings&quot;),
+       ylab = paste0(&quot;Scaled PC&quot;,v2,&quot; Component Loadings&quot;))
+mtext(paste0(&quot;Scaled PC&quot;,v1,&quot; Observation Scores&quot;), 3, 1.6, font = 2)
+mtext(paste0(&quot;Scaled PC&quot;,v2,&quot; Observation Scores&quot;), 4, 1.6, font = 2)
+points(pca_usgs$x[,v1]*sf, pca_usgs$x[,v2]*sf,
+       pch = c(0,1,2,5,15,16,17,18)[usgs_clr$Rock],
+       lwd=c(2,2,2,2,0,0,0,0)[usgs_clr$Rock], 
+       col = c(2:9)[usgs_clr$Rock], cex = 1)
+
+arrows(0, 0, pca_usgs$rot[,v1], pca_usgs$rot[,v2], 
+       length = 0.08, lwd = 2)
+shadowtext(pca_usgs$rot[,v1]*1.1, 
+           jitter(pca_usgs$rot[,v2]*1.1, factor = 10),
+           labels = row.names(pca_usgs$rot), 
+           col=&quot;black&quot;,bg=&quot;white&quot;)
+# dataEllipse(x=pca_usgs$x[,v1]*sf, y=pca_usgs$x[,v2]*sf*1.5,
+#             groups = usgs_clr$Rock, add = TRUE, plot.points = FALSE,
+#             levels = c(0.9), center.pch = 3, col = 2:21,
+#             lty = 2, lwd = 1, center.cex = 2.4, group.labels = &quot;&quot;)
+legend(&quot;topleft&quot;, bty = &quot;n&quot;, inset = 0.003, ncol=1,
+       box.col = &quot;gray&quot;, box.lwd = 2, bg = 14,
+       legend = levels(usgs_clr$Rock),
+       pch = c(0,1,2,5,15,16,17,18), 
+       pt.lwd = c(2,2,2,2,0,0,0,0),
+       col = c(2:9), pt.bg = c(2:9),
+       pt.cex = c(1.2, 1.4, 1.2,1.2,1.4),
+       cex = 1, x.intersp = 0.6, y.intersp = 0.9)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/visualise%20PCA-1.png" alt="\label{PCAbiplot}PCA biplot for major element rock composition data, with observations categorised by rock type. Data were corrected for closure using CLR-transformation." width="65%" />
+<p class="caption">
+PCA biplot for major element rock composition data, with observations
+categorised by rock type. Data were corrected for closure using
+CLR-transformation.
+</p>
+</div>
+<pre class="r"><code>usgsBP &lt;- fviz_pca_biplot(pca_usgs, title = &quot;&quot;, geom=&quot;point&quot;,
+                col.ind = usgs_clr$Rock, 
+                col.var = &quot;black&quot;, repel = TRUE,
+                pch = c(19,19,17,17,19,19,17,17)[usgs_clr$Rock],
+                palette = c(&quot;dodgerblue4&quot;,&quot;sienna&quot;,&quot;steelblue4&quot;,&quot;tan4&quot;, 
+                            &quot;red3&quot;, &quot;purple&quot;, &quot;purple3&quot;, &quot;tomato3&quot;),
+                alpha.ind = 0.35)
+usgsBP + theme_classic()</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/factoextra%20pca%20biplot-1.png" alt="\label{FVbiplot}PCA biplot for major element rock composition data generated with the factoextra package, with observations categorised by rock type. Data were corrected for closure using CLR-transformation." width="65%" />
+<p class="caption">
+PCA biplot for major element rock composition data generated with the
+factoextra package, with observations categorised by rock type. Data
+were corrected for closure using CLR-transformation.
+</p>
+</div>
+<p>We can see the results of this PCA biplot visualization in and .
+Those of you who are geologically or geochemically inclined can decide
+whether the apparent element associations (<em>e.g</em>. the similar
+vectors for Ce, La, and Y) make sense. There certainly does seem to be
+some separation of categories in PCA space, shown by the observation
+scores (symbols), even though PCA is not really a classification method.
+Similar colours are used for similar rock types, <em>e.g</em>. basalt
+and gabbro are in the brown hued symbols at top left.</p>
+</div>
+<div id="add-principal-components-to-data-frame" class="section level3"
+number="1.1.3">
+<h3><span class="header-section-number">1.1.3</span> Add principal
+components to data frame</h3>
+<p>We will include all principal component scores for each sample in our
+CLR-transformed data frame (code not shown), even though the Kaiser
+rules suggest that at most 7 components contain useful information. We
+don’t have to subsequently use them <em>all</em> !.
+[<strong>Note</strong> that we could also perform LDA using the
+information stored in the PCA output object itself.]</p>
+</div>
+</div>
+<div id="lda-on-pca-ordination-scores-of-whole-rock-major-element-data"
+class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> LDA on PCA ordination
+scores of whole rock major element data</h2>
+<p>In this exercise we use the first 15 Principal Components as
+predictor variables for the Linear Discriminant Analysis. This is
+somewhat arbitrary, but it’s a conservative approach as we’re including
+about twice as many principal components than the 7-8 suggested by the
+Kaiser rules.</p>
+<pre class="r"><code>data0 &lt;- usgs_clr[,c(&quot;Rock&quot;,&quot;PC1&quot;,&quot;PC2&quot;,&quot;PC3&quot;,&quot;PC4&quot;,&quot;PC5&quot;,&quot;PC6&quot;,&quot;PC7&quot;,&quot;PC8&quot;,
+                     &quot;PC9&quot;,&quot;PC10&quot;,&quot;PC11&quot;,&quot;PC12&quot;,&quot;PC13&quot;,&quot;PC14&quot;,&quot;PC15&quot;,&quot;PC16&quot;,
+                     &quot;PC17&quot;,&quot;PC18&quot;,&quot;PC19&quot;,&quot;PC20&quot;,&quot;PC21&quot;,&quot;PC22&quot;,&quot;PC23&quot;,&quot;PC24&quot;,
+                     &quot;PC25&quot;)]
+data0[,2:26] &lt;- scale(data0[,2:26]) # scale just numeric variables
+lda_pca_usgs &lt;- lda(formula = Rock ~ PC1 + PC2 + PC3 + PC4 + PC5 + 
+                       PC6 + PC7 + PC8 + PC9 + PC10 + 
+                      PC11 + PC12 + PC13 + PC14 + PC15, data = data0,
+                    prior = as.numeric(summary(data0$Rock))/nrow(data0)) 
+print(lda_pca_usgs$call) # custom output is tidier for pdf
+cat(&quot;\nPrior probablilities:\n&quot;);print(lda_pca_usgs$prior, digits=2)
+cat(&quot;\nGroup means:\n&quot;);print(lda_pca_usgs$means, digits=2)
+cat(&quot;\nCoefficients of linear discriminants:\n&quot;)
+print(lda_pca_usgs$scaling, digits=3)</code></pre>
+<pre><code>## lda(formula = Rock ~ PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + 
+##     PC8 + PC9 + PC10 + PC11 + PC12 + PC13 + PC14 + PC15, data = data0, 
+##     prior = as.numeric(summary(data0$Rock))/nrow(data0))
+## 
+## Prior probablilities:
+##   andesite     basalt     dacite     gabbro    granite peridotite pyroxenite 
+##      0.159      0.181      0.164      0.079      0.165      0.010      0.018 
+##   rhyolite 
+##      0.224 
+## 
+## Group means:
+##               PC1    PC2    PC3    PC4     PC5    PC6    PC7    PC8    PC9
+## andesite   -0.385  0.206  0.168 -0.093 -0.0144 -0.058 -0.142 -0.111 -0.494
+## basalt     -0.970  0.279  0.329  0.250 -0.1774 -0.126  0.129 -0.048 -0.135
+## dacite      0.058  0.034 -0.094 -0.132  0.1897 -0.029 -0.122 -0.022 -0.219
+## gabbro     -0.991 -0.030  0.408  0.021  0.0015  0.369 -0.239  0.044  0.900
+## granite     0.630 -0.137 -0.520 -0.288 -0.1484 -0.441  0.147  0.525 -0.061
+## peridotite -1.333 -1.268  1.831  1.020 -0.3210  0.596  0.574  0.390  1.937
+## pyroxenite -1.100 -0.403  1.608  0.528 -0.3282  0.680  0.160  0.406  1.033
+## rhyolite    1.047 -0.195 -0.287  0.077  0.1639  0.279  0.023 -0.319  0.179
+##              PC10    PC11   PC12    PC13    PC14   PC15
+## andesite   -0.040 -0.0861  0.201  0.0097  0.0516  0.011
+## basalt      0.019 -0.0890  0.176  0.0140 -0.0381 -0.046
+## dacite      0.056  0.0885  0.138 -0.1502  0.1169 -0.162
+## gabbro     -0.111 -0.1104  0.096 -0.0226  0.1053  0.096
+## granite    -0.059  0.0715 -0.069  0.0824 -0.1064  0.119
+## peridotite  0.846  0.2848 -1.937  0.0758 -0.4029  1.135
+## pyroxenite  0.091  0.4459 -0.631  0.1866 -0.3243  0.472
+## rhyolite    0.008  0.0059 -0.229  0.0211 -0.0061 -0.062
+## 
+## Coefficients of linear discriminants:
+##            LD1     LD2     LD3     LD4    LD5      LD6     LD7
+## PC1   1.958788 -0.2139  0.0844  0.1360 -0.034  0.18600 -0.1765
+## PC2  -0.244107  0.4046  0.1553 -0.0166  0.271  0.13998 -0.1944
+## PC3  -0.960980 -0.3090  0.1366  0.3176 -0.381  0.27351 -0.2637
+## PC4  -0.301089 -0.2487  0.1693  0.3895  0.413 -0.19012 -0.1793
+## PC5   0.210028 -0.0114  0.3052 -0.1490 -0.291 -0.34792  0.0468
+## PC6  -0.100070 -0.4141  0.5019 -0.1115 -0.138  0.26287 -0.1729
+## PC7   0.029813 -0.0843 -0.2321  0.3506  0.389 -0.19681 -0.1836
+## PC8  -0.036498  0.0256 -0.7370 -0.1930 -0.241 -0.00208 -0.3041
+## PC9  -0.200992 -0.8071 -0.1020 -0.5908  0.333 -0.11595 -0.0614
+## PC10 -0.048844 -0.1072 -0.0083  0.2372 -0.155 -0.46825  0.1799
+## PC11  0.070897 -0.0932 -0.1068  0.0783 -0.319 -0.18002 -0.5554
+## PC12 -0.147998  0.5086  0.1568 -0.3600  0.121  0.11217 -0.3210
+## PC13  0.011213 -0.0469 -0.1041  0.0856  0.183  0.43761  0.0153
+## PC14  0.000889  0.0902  0.1742 -0.2002 -0.140 -0.17370  0.1537
+## PC15 -0.119001 -0.2111 -0.2681  0.1019 -0.138  0.34423  0.4539</code></pre>
+<pre><code>## Correlation matrix for PCA scores (not part of LDA output):</code></pre>
+<pre><code>##     PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8
+## PC1   1   0   0   0   0   0   0   0
+## PC2   0   1   0   0   0   0   0   0
+## PC3   0   0   1   0   0   0   0   0
+## PC4   0   0   0   1   0   0   0   0
+## PC5   0   0   0   0   1   0   0   0
+## PC6   0   0   0   0   0   1   0   0
+## PC7   0   0   0   0   0   0   1   0
+## PC8   0   0   0   0   0   0   0   1</code></pre>
+<p>The correlation matrix table above is not really needed, but it’s
+included because it shows something worth remembering. We see from the
+correlation matrix that, as should be the case with PCA, the principal
+components are completely uncorrelated. <strong>Remember</strong>: we
+cannot make an LDA model if the predictors are too collinear (too highly
+correlated).</p>
+</div>
+<div id="visualising-pca-lda-separation" class="section level2"
+number="1.3">
+<h2><span class="header-section-number">1.3</span> Visualising PCA-LDA
+separation</h2>
+<div id="lda-histograms" class="section level3" number="1.3.1">
+<h3><span class="header-section-number">1.3.1</span> LDA histograms</h3>
+<p>We can plot the separation achieved by each linear discriminant (LD)
+function by predicting the classification using the input data, then
+using the <strong>ldahist</strong> function (Venables and Ripley 2002) –
+see . To see the separation in another LDA dimension, we change the
+subscript in the <em>pred_lda_pca$x[,1]</em> option.</p>
+<pre class="r"><code>pred_lda_pca &lt;- predict(lda_pca_usgs, usgs_clr[,34:48])
+ldahist(pred_lda_pca$x[,1], g = usgs_clr$Rock, type = &quot;both&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/lda%20histogram-1.png" alt="\label{ldaHist}Histogram based on the first linear discriminant function for LDA on selected principal components calculated from open (CLR-transformed) whole-rock major element data." width="576" height="80%" />
+<p class="caption">
+Histogram based on the first linear discriminant function for LDA on
+selected principal components calculated from open (CLR-transformed)
+whole-rock major element data.
+</p>
+</div>
+<p>The histograms in show the most overlap in the first linear
+discriminant between rocks of the same broad type (<em>e.g</em>. the two
+ultramafic rocks <em>peridotite</em> and <em>pyroxenite</em>). We only
+plot this LDA dimension to save space, but it would be good practice to
+inspect the next few dimensions as well, guided by the ‘Proportion of
+trace’ in the initial LDA output above.</p>
+<p>We could also draw partition plots, but these are not presented in
+this version of this document.</p>
+</div>
+<div id="scatter-plots-resembling-biplots" class="section level3"
+number="1.3.2">
+<h3><span class="header-section-number">1.3.2</span> Scatter Plots
+resembling biplots</h3>
+<p>Scatter-plots showing each variable and observation in linear
+discriminant dimensions, and grouped by category, are useful for visual
+assessment of how well the LDA model separates the observations.
+[<em>Code is truncated.</em>]</p>
+<pre class="r"><code>par(mfrow = c(2,2), mar = c(3.5,3.5,1,1), mgp = c(1.5,0.3,0), tcl = 0.25,
+    lend = &quot;square&quot;, ljoin = &quot;mitre&quot;, cex.main = 0.9, font.lab=2)
+palette(c(&quot;black&quot;,c(&quot;#104E8B80&quot;, &quot;#A0522D80&quot;, &quot;#36648B80&quot;, &quot;#8B5A2B80&quot;, 
+          &quot;#CD000080&quot;, &quot;#A020F080&quot;, &quot;#7D26CD80&quot;, &quot;#CD4F3980&quot;),&quot;white&quot;))
+plot(lda_pca_usgs$scaling[,1], lda_pca_usgs$scaling[,2], 
+     type=&quot;n&quot;, xlim = c(-1.2,3),  ylim = c(-0.9,0.6), 
+     xlab=&quot;Linear Discriminant [1]&quot;, ylab=&quot;Linear Discriminant [2]&quot;, 
+     main=&quot;Variable Coefficients [LD1, LD2]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2); abline(h=0,col=&quot;grey&quot;,lty=2)
+for(i in 1:NROW(lda_pca_usgs$scaling)){
+  arrows(0,0,lda_pca_usgs$scaling[i,1],lda_pca_usgs$scaling[i,2],
+         length = 0.08, col = &quot;grey60&quot;) }
+text(lda_pca_usgs$scaling[,1]*1.1, lda_pca_usgs$scaling[,2]*1.1, 
+     labels=row.names(lda_pca_usgs$scaling[,1:2]),
+     cex = 0.9, col = 1, pos=c(1,2,3,4), offset = 0.01)
+mtext(&quot;(a)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)
+clrz &lt;- matrix(rainbow(20,v=0.8,end=0.8),ncol=10,byrow = T)
+attributes(clrz) &lt;- NULL
+legend(&quot;topright&quot;, ncol = 2, legend=levels(usgs_clr$Rock), 
+       col=c(2:9), pch=c(0,1,2,5,15,16,17,18), pt.lwd = 2,
+       bty=&quot;n&quot;, box.col=&quot;grey90&quot;, y.intersp = 1, 
+       title=&quot;Rock Type in (b) - (d)&quot;,
+       box.lwd=2, inset=0.02, pt.cex=1.5, cex=1.1)
+
+ldapcaPred_usgs &lt;- predict(lda_pca_usgs)
+
+plot(ldapcaPred_usgs$x[,1], ldapcaPred_usgs$x[,2], 
+     cex = 1., lwd=2, col = c(2:9)[usgs_clr$Rock],
+     pch = c(0,1,2,5,15,16,17,18)[usgs_clr$Rock], 
+     main = &quot;Predictions for Observations [LD1, LD2] based on PCA&quot;, 
+     xlab = &quot;Linear Discriminant [1]&quot;, ylab = &quot;Linear Discriminant [2]&quot;)
+abline(v=0,col=&quot;grey&quot;,lty=2); abline(h=0,col=&quot;grey&quot;,lty=2)
+mtext(&quot;(b)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/plot%20LDA%20PCA-1.png" alt="\label{LDAPCAbiplot}Linear discriminant analysis (LDA) plots for Pricipal Components based on open (CLR-transformed) rock composition data: (a) variable coefficients in LD1-LD2 space, and predictions for observations in (b) LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD3 space. Legend in (a) applies to plots (b), (c), and (d)." width="85%" />
+<p class="caption">
+Linear discriminant analysis (LDA) plots for Pricipal Components based
+on open (CLR-transformed) rock composition data: (a) variable
+coefficients in LD1-LD2 space, and predictions for observations in (b)
+LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD3 space. Legend in (a)
+applies to plots (b), (c), and (d).
+</p>
+</div>
+<p>The plot in looks slightly weird, as the labels for the LDA
+coefficients reflect the use of Principal Components as predictors. In
+this sense they may not be as intuitively interpretable as predictors
+which are actual measured variables (or transformations of these
+variables, at least.</p>
+<p>It definitely seems that LDA is able to separate categories (hint:
+try thinking of (b) and (c) as the front and top views of a 3D cloud of
+points). There may be some overlap of different rocks within the same
+type, <em>e.g</em>. the felsic rocks granite and rhyolite, and the plot
+may exacerbate the visual overlap by using similar colours for rocks in
+the same group (felsic = brown).</p>
+</div>
+</div>
+<div
+id="inspecting-the-agreement-between-actual-and-predicted-categories-in-lda"
+class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> Inspecting the
+agreement between actual and predicted categories in LDA</h2>
+<p>To do this easily we just make an R data frame with columns for the
+actual categories (from the original data frame) and the predicted
+categories (from the prediction objects we just made). We add a column
+telling us if these two columns match in each row (which we can see
+easily, but we use this column to calculate a numerical prediction
+accuracy).</p>
+<p>The code below uses the <em>head()</em> function to inspect the first
+few rows of each comparison, but we could easily look at the whole
+comparison data frames using <em>print()</em>.</p>
+<pre class="r"><code>ldapcaComp &lt;- data.frame(Actual = as.character(usgs_clr$Rock),
+                      Predicted = as.character(pred_lda_pca$class))
+ldapcaComp$test &lt;- as.character(usgs_clr$Rock) == 
+  as.character(pred_lda_pca$class)
+k = length(which(ldapcaComp$test == TRUE))
+cat(&quot;\nPredictions by LDA using PCAs from open data:&quot;,k,&quot;out of&quot;,NROW(usgs_clr),
+    &quot;=&quot;,paste0(round(100*k/NROW(usgs_clr),1),&quot;% correct\n&quot;))
+head(ldapcaComp, n = 10)</code></pre>
+<pre><code>## 
+## Predictions by LDA using PCAs from open data: 3040 out of 5980 = 50.8% correct
+##      Actual Predicted  test
+## 1    basalt    basalt  TRUE
+## 2  rhyolite    dacite FALSE
+## 3    basalt    basalt  TRUE
+## 4    basalt    basalt  TRUE
+## 5    basalt    basalt  TRUE
+## 6    basalt    basalt  TRUE
+## 7  rhyolite    dacite FALSE
+## 8    basalt    basalt  TRUE
+## 9  rhyolite  rhyolite  TRUE
+## 10   basalt    basalt  TRUE</code></pre>
+<p>For this dataset, it seems as though LDA using principal components
+is not that good at predicting the Rock category for each observation!
+In the output above, rhyolite is mis-identified as dacite (the rocks are
+from adjacent compositional groups, felsic (rhyolite) and intermediate
+(dacite), and there may be overlap at extremes of typical composition
+ranges).</p>
+<p>This kind of comparison is not very rigorous, and nor does it address
+the reason we might perform a supervised classification like LDA – to
+use data to predict <em>unknown</em> categories. The ability of LDA to
+predict unknown categories can be addressed by validation procedures,
+such as the one we investigate below.</p>
+<p>But first we can use one of the options in the <strong>lda()</strong>
+function itself, cross validation (<strong>CV = TRUE</strong>):</p>
+<pre class="r"><code>lda_pca_usgs_cv &lt;- lda(formula = Rock ~ PC1 + PC2 + PC3 + PC4 + PC5 + 
+                       PC6 + PC7 + PC8 + PC9 + PC10 + 
+                      PC11 + PC12 + PC13 + PC14 + PC15, data = data0,
+                    prior = as.numeric(summary(data0$Rock))/nrow(data0),
+                    CV = TRUE) 
+cat(&quot;\nLDA predictions (first several):\n&quot;); head(lda_pca_usgs_cv$class, n=27)
+cat(&quot;\nPosterior probabilities (first few rows):\n&quot;); head(lda_pca_usgs_cv$posterior)
+ldapcaComp &lt;- data.frame(Observed=usgs_clr$Rock,Predicted=lda_pca_usgs_cv$class)
+cat(&quot;\nComparison of (first several) LDA predictions with reality:\n&quot;)
+head(ldapcaComp, n = 15)</code></pre>
+<pre><code>## 
+## LDA predictions (first several):
+##  [1] basalt   dacite   andesite basalt   basalt   basalt   dacite   andesite
+##  [9] rhyolite basalt   basalt   granite  gabbro   gabbro   gabbro   gabbro  
+## [17] basalt   gabbro   gabbro   gabbro   gabbro   gabbro   gabbro   gabbro  
+## [25] basalt   gabbro   gabbro  
+## 8 Levels: andesite basalt dacite gabbro granite peridotite ... rhyolite
+## 
+## Posterior probabilities (first few rows):
+##    andesite     basalt     dacite     gabbro      granite   peridotite
+## 1 0.2460045 0.67515073 0.01866991 0.05980069 2.184847e-05 6.765545e-09
+## 2 0.3309075 0.05012787 0.54636990 0.01135667 2.938741e-02 4.534866e-11
+## 3 0.4741633 0.38275795 0.10572785 0.03690199 2.747007e-04 3.265315e-11
+## 4 0.2254140 0.70647593 0.01295624 0.05453408 1.059994e-05 1.426524e-08
+## 5 0.1716271 0.63150954 0.01866073 0.17808640 1.860275e-05 2.122903e-10
+## 6 0.1698549 0.56897538 0.03299123 0.22799093 3.270987e-05 4.248485e-09
+##     pyroxenite     rhyolite
+## 1 3.427417e-04 9.535853e-06
+## 2 3.085201e-06 3.184754e-02
+## 3 9.547476e-06 1.647054e-04
+## 4 6.040919e-04 5.057543e-06
+## 5 8.882681e-05 8.763986e-06
+## 6 1.324588e-04 2.238833e-05
+## 
+## Comparison of (first several) LDA predictions with reality:
+##    Observed Predicted
+## 1    basalt    basalt
+## 2  rhyolite    dacite
+## 3    basalt  andesite
+## 4    basalt    basalt
+## 5    basalt    basalt
+## 6    basalt    basalt
+## 7  rhyolite    dacite
+## 8    basalt  andesite
+## 9  rhyolite  rhyolite
+## 10   basalt    basalt
+## 11   basalt    basalt
+## 12  granite   granite
+## 13   gabbro    gabbro
+## 14   gabbro    gabbro
+## 15   gabbro    gabbro</code></pre>
+<p>Including the <strong>CV = TRUE</strong> option in the
+<strong>lda()</strong> function implements ‘leave one out cross
+validation’. Simply stated, this omits one observation at a time,
+running the LDA on the remaining data each time, and predicting the
+probability of the missed observation being in each category (the
+<em>posterior probabilities</em>). [Each observation is assigned to the
+category with the greatest posterior probability – the
+‘<strong>MAP</strong>’.]</p>
+</div>
+<div
+id="assessment-of-lda-prediction-using-a-training-validation-method"
+class="section level2" number="1.5">
+<h2><span class="header-section-number">1.5</span> Assessment of LDA
+prediction using a training-validation method</h2>
+<p>We have seen this related method, using ‘training’ and ‘validation’
+subsets of our data, in a previous session. We divide the dataset into
+two subsets, with one subset of the data used to generate an LDA model,
+which is then used to predict the categories in the other subset. The
+training-validation process is repeated numerous times to calculate an
+average prediction rate.</p>
+<p><strong>NOTE</strong>: in a dataset with many observations, like the
+one we’re using in this session (5980 rows), the validation process will
+be slow, since we are creating and assessing the LDA model many times
+over.</p>
+<pre class="r"><code>n0 &lt;- 100 # number of iterations
+ftrain &lt;- 0.5 # proportion of observations in training set
+results &lt;- data.frame(
+  Rep = rep(NA, n0),
+  matches = rep(NA, n0),
+  non_matches = rep(NA, n0),
+  success = rep(NA, n0))
+train &lt;- sample(1:NROW(usgs_clr), round(NROW(usgs_clr) * ftrain,0))
+# make vector of individual category non-matches
+matchByClass &lt;- 
+  data.frame(Match1 = rep(0,nlevels(usgs$Rock[train]))) 
+rownames(matchByClass) &lt;- levels(pred_lda_pca$class)
+fMatchXClass &lt;- 
+  data.frame(PctMch1 = rep(0,nlevels(usgs$Rock[train]))) 
+rownames(fMatchXClass) &lt;- levels(pred_lda_pca$class)
+# make vector of cumulative category counts in usgs_clr[-train] iterations
+cc0 &lt;- rep(0,nlevels(usgs_clr$Rock))
+isOK &lt;- 0 ; i &lt;- 2
+
+for (i in 1:n0) {
+  train &lt;- sample(1:NROW(usgs_clr), round(NROW(usgs_clr) * ftrain,0))
+      # set condition requiring all categories to be populated
+      if (is.na(match(NA,tapply(usgs_clr[train,]$SiO2, 
+                      usgs_clr[train,]$Rock, sd, na.rm=T))) == TRUE) {
+          lda_Rock_train &lt;- lda(formula = Rock ~ PC1 + PC2 + PC3 + 
+                            PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10 + 
+                            PC11 + PC12 + PC13 + PC14 + PC15, 
+                            data = usgs_clr[train,],
+                            prior=as.numeric(summary(usgs_clr$Rock[train]))/
+                            nrow(usgs_clr[train,]))
+          pred_lda_pca_train &lt;- predict(lda_Rock_train, usgs_clr[-train,])
+          isOK &lt;- isOK + 1
+        }
+  
+  k=0               # number of matches
+  m0 &lt;-             # vector of individual category matches 
+    as.matrix(rep(0,nlevels(usgs_clr$Rock[train]))) 
+  rownames(m0) &lt;- levels(usgs_clr$Rock)
+  m1 &lt;-             # vector of fractional category matches 
+    as.matrix(rep(0,nlevels(usgs_clr$Rock[train]))) 
+  rownames(m1) &lt;- levels(usgs_clr$Rock)
+  for (jM in 1:NROW(usgs_clr[-train,])) {
+    for (jS in 1:nlevels(pred_lda_pca_train$class)) {
+      if((pred_lda_pca_train$class[jM] == levels(pred_lda_pca_train$class)[jS]) &amp; 
+         (usgs_clr$Rock[-train][jM] == levels(pred_lda_pca_train$class)[jS]) ) 
+        m0[jS] = m0[jS] + 1
+      else  m0[jS] = m0[jS] 
+    }
+    k = sum(m0)
+  }
+  cc0 &lt;- cc0 + as.numeric(summary(usgs_clr$Rock[-train]))
+  m1 &lt;- round(100*m0/as.numeric(summary(usgs_clr$Rock[-train])),1)
+  matchByClass[,paste0(&quot;Match&quot;,i)] &lt;- m0
+  fMatchXClass[,paste0(&quot;PctMch&quot;,i)] &lt;- m1
+  # output to results data frame: iteration, matches, non-matches, proportion matched
+  results[i,] &lt;- c(i, k, NROW(usgs_clr[-train,])-k, 
+                   signif(k/NROW(usgs_clr[-train,]),3))
+}
+# Output code block
+cat(paste(&quot;[Based on&quot;, n0, &quot;random subsets of&quot;,paste0(100*ftrain,&quot;%&quot;),
+          &quot;of the dataset to train LDA model\n&quot;,
+     &quot;      to predict remaining observations]\n&quot;))
+  cat(&quot;Number of obs. in random subsets =&quot;,NROW(train),
+      &quot; (predicting&quot;,NROW(usgs_clr)-NROW(train),&quot;samples)\n&quot;)
+  print(numSummary(results[,2:4], statistics=c(&quot;mean&quot;,&quot;sd&quot;))$table)
+  ns0 &lt;- numSummary(results$success)
+  t0 &lt;- t.test(results$success)
+  cat(rep(&quot;-\u2013-&quot;,24),
+      &quot;\nStat. summary for &#39;success&#39;:\nMean = &quot;,round(ns0$table[1],4),
+      &quot;, sd = &quot;,round(ns0$table[2],4),
+      &quot;, 95% confidence interval = (&quot;,
+      signif(t0$conf.int[1],3),&quot;, &quot;,signif(t0$conf.int[2],4),
+      &quot;) (after &quot;,i,&quot; reps)\n&quot;, sep=&quot;&quot;)
+  cat(n0-isOK,&quot;iterations &#39;failed&#39; due to randomisation missing a category\n\n&quot;)
+  cat(&quot;Fraction of matches by category over ALL iterations:\n&quot;)
+  summCats &lt;- data.frame(
+    Rock_Type = row.names(matchByClass),
+    Total_Matched = rowSums(matchByClass),
+    Actual = cc0,
+    Percent_Matched = paste0(round(100*(rowSums(matchByClass)/cc0),1),&quot;%&quot;),
+    row.names = NULL)
+  print(summCats)
+# tidy up
+rm(list = c(&quot;n0&quot;,&quot;ftrain&quot;,&quot;i&quot;,&quot;isOK&quot;,&quot;jS&quot;,&quot;jM&quot;,&quot;k&quot;,&quot;m0&quot;,&quot;m1&quot;,&quot;t0&quot;,&quot;cc0&quot;,
+            &quot;matchByClass&quot;,&quot;fMatchXClass&quot;,&quot;results&quot;,&quot;train&quot;,&quot;summCats&quot;))</code></pre>
+<pre><code>## [Based on 100 random subsets of 50% of the dataset to train LDA model
+##        to predict remaining observations]
+## Number of obs. in random subsets = 2990  (predicting 2990 samples)
+##                   mean           sd
+## matches     1869.92000 23.369530365
+## non_matches 1120.08000 23.369530365
+## success        0.62531  0.007769007
+## -–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–--–-
+## Stat. summary for &#39;success&#39;:
+## Mean = 0.6253, sd = 0.0078, 95% confidence interval = (0.624, 0.6269) (after 100 reps)
+## 0 iterations &#39;failed&#39; due to randomisation missing a category
+## 
+## Fraction of matches by category over ALL iterations:
+##    Rock_Type Total_Matched Actual Percent_Matched
+## 1   andesite         27726  47446           58.4%
+## 2     basalt         39126  54109           72.3%
+## 3     dacite         25321  49358           51.3%
+## 4     gabbro         10328  23639           43.7%
+## 5    granite         29720  49217           60.4%
+## 6 peridotite          2662   3125           85.2%
+## 7 pyroxenite          2017   5272           38.3%
+## 8   rhyolite         50092  66834           74.9%</code></pre>
+<p>An issue that we haven’t considered yet is whether all the variables
+we used for prediction are necessary. The R package
+‘<strong>klaR</strong>’ (Weihs et al. 2005) includes the
+<strong>stepclass()</strong> function, which enables us to refine an LDA
+model, using a procedure similar to stepwise selection of predictors in
+multiple regression. We need to specify (1) the model as a formula (the
+same as used previously), (2) the data frame to be used and, [of course]
+(3) that we are using <strong>lda</strong> as our classification
+method.</p>
+<p>The outcome of applying the stepclass procedure depends a lot on some
+of the other options selected. It is usually necessary to set the
+default improvement tolerance (5% = 0.05) to a lower value - we’re using
+0.005 (0.5%). We set the criterion to be optimised to “CR”, the
+correctness rate (for comparison with our validation output), and also
+select “both” (<em>i.e</em>. forward-backward) for predictor selection.
+If we want to see the progress of the stepwise selection, we need to set
+‘output = TRUE’.</p>
+<pre class="r"><code>lda_pca_step &lt;- stepclass(formula = Rock ~ PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + 
+                      PC7 + PC8 + PC9 + PC10 + PC11 + PC12 + PC13 + PC14 + PC15,
+                      data = usgs_clr, method = &quot;lda&quot;, 
+                      direction = &quot;both&quot;, criterion = &quot;CR&quot;,
+                      improvement = 0.005, output = FALSE)
+cat(&quot;Final&quot;,lda_pca_step$method,&quot;model:&quot;,
+    as.character(lda_pca_step$formula)[c(2,1,3)],&quot;\n\n&quot;)
+cat(lda_pca_step$per, signif(lda_pca_step$result.pm[1], 4), sep=&quot;:&quot;)</code></pre>
+<pre><code>## Final lda model: Rock ~ PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC8 + PC9 + PC12 
+## 
+## correctness rate:0.6294</code></pre>
+<p>The output from stepwise selection of LDA predictors shows us that we
+do not need to include all the principal components to achieve a
+correctness rate (62.8%) similar to that achieved above (62.7%).</p>
+<p>As is the case with stepwise selection of predictors for multiple
+linear regression, the choice of method options would affect our result.
+For example, you could try changing the <em>direction</em>,
+<em>criterion</em>, or <em>improvement</em> options (run
+<strong>help(package=“klaR”, topic=“stepclass”)</strong> for details of
+the choices).</p>
+<p>We would re-run our LDA model following stepwise selection, using the
+formula after ‘final model:’ in the output above.</p>
+</div>
+</div>
+<div id="regression-analysis-using-compositional-data"
+class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Regression Analysis
+using Compositional Data</h1>
+<p>A useful article on this topic is:<br> van den Boogaart, K.G.,
+Filzmoser, P., Hron, K. <em>et al</em>. (2021). Classical and robust
+regression analysis with compositional data. <em>Mathematical
+Geosciences</em> <strong>53</strong>, 823–858. <a
+href="https://doi.org/10.1007/s11004-020-09895-w"
+class="uri">https://doi.org/10.1007/s11004-020-09895-w</a></p>
+<p>We have some data on 106 topsoil (A-horizon) soil samples including
+proportions of soil grainsize-range categories and other numeric
+variables. The data have been censored to remove observations (rows)
+having missing values.</p>
+<pre class="r"><code>git &lt;- &quot;https://raw.githubusercontent.com/Ratey-AtUWA/compositional_data/main/&quot;
+topsoil &lt;- read.csv(paste0(git,&quot;topsoil.csv&quot;), stringsAsFactors = TRUE)
+rm(git)</code></pre>
+<p>We’re going to add alr- transformed proportions of soil
+grainsize-range categories to the ‘topsoil’ data frame. We use the ilr
+(<strong>i</strong>sometric <strong>l</strong>og-<strong>r</strong>atio)
+transformation as there can be problems in some statistical procedures
+with the singular covariance matrix of clr-transformed compositional
+data.</p>
+<pre class="r"><code>tempDF &lt;- data.frame(Gravel.alr=rep(NA,NROW(topsoil)),
+                     Silt.alr=rep(NA,NROW(topsoil)),
+                     Clay.alr=rep(NA,NROW(topsoil)))
+topsoil[,c(&quot;Gravel.alr&quot;,&quot;Silt.alr&quot;,&quot;Clay.alr&quot;)] &lt;-
+  alr(topsoil[,c(&quot;Gravel&quot;,&quot;Sand&quot;,&quot;Silt&quot;,&quot;Clay&quot;)], j=2, ifwarn = F)</code></pre>
+<pre><code>##   The divisor is Sand</code></pre>
+<pre class="r"><code>summary(topsoil[,c(&quot;Gravel.alr&quot;,&quot;Silt.alr&quot;,&quot;Clay.alr&quot;)])</code></pre>
+<pre><code>##    Gravel.alr        Silt.alr          Clay.alr      
+##  Min.   :-6.904   Min.   :-9.0904   Min.   :-7.8923  
+##  1st Qu.:-2.554   1st Qu.:-2.9227   1st Qu.:-2.9269  
+##  Median :-1.963   Median :-2.5115   Median :-2.5094  
+##  Mean   :-2.209   Mean   :-2.6266   Mean   :-2.6278  
+##  3rd Qu.:-1.379   3rd Qu.:-2.0597   3rd Qu.:-1.9323  
+##  Max.   : 2.763   Max.   :-0.7777   Max.   : 0.1245</code></pre>
+<p>We might (for instance) be interested in whether we can predict the
+density of soil, which affects porosity and penetration of plant roots,
+from the grain-size proportions. Since there are almost certainly
+collinearities between closed grain-size proportions, we might expect a
+better linear regression model using the <em>alr-transformed</em> data
+which have closure removed. Note that the alr transformation uses one of
+the closed-set variables as the denominator for the log-ratio:</p>
+<p><span class="math inline">\(alr(x)_i = \ln\frac{x_i}{x_D}\)</span>;
+in this example <span class="math inline">\(alr(x)_i =
+\ln\frac{x_i}{Sand_i}\)</span></p>
+<pre class="r"><code>require(corrplot); require(Hmisc)
+par(mar=c(1,5,5,3), mfrow=c(1,2), mgp=c(1.5,0.2,0), xpd=T)
+cor0 &lt;- rcorr(as.matrix(topsoil[,c(&quot;Gravel&quot;,&quot;Silt&quot;,&quot;Clay&quot;)]))
+m0 &lt;- cor0$r; row.names(m0) &lt;- c(&quot;Gravel.raw&quot;,&quot;Silt.raw&quot;,&quot;Clay.raw&quot;)
+colnames(m0) &lt;- row.names(m0)
+corrplot(m0, method=&quot;ellipse&quot;, cl.ratio = 0.25,
+         addCoef.col = &quot;black&quot;, tl.col = &quot;grey33&quot;, cl.pos = &quot;b&quot;)
+mtext(&quot;(a) Closed&quot;, side = 3, line = 1, adj = 0.05)
+cor0 &lt;- rcorr(as.matrix(topsoil[,c(&quot;Gravel.alr&quot;,&quot;Silt.alr&quot;,&quot;Clay.alr&quot;)]))
+corrplot(cor0$r, method=&quot;ellipse&quot;, title = &quot;&quot;, cl.ratio = 0.25,
+         addCoef.col = &quot;black&quot;, tl.col = &quot;darkred&quot;, cl.pos = &quot;b&quot;)
+mtext(&quot;(b) Open (alr)&quot;, side = 3, line = 1, adj = 0.05)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/compare%20correlation%20matrices-1.png" alt="\label{CompCorr}Correlations in soil texture variables, omitting Sand content since it is used as the denominator for additive log-ratio transformation, for (a) untransformed (closed) and (b) alr-transformed (opened) grain size data." width="70%" />
+<p class="caption">
+Correlations in soil texture variables, omitting Sand content since it
+is used as the denominator for additive log-ratio transformation, for
+(a) untransformed (closed) and (b) alr-transformed (opened) grain size
+data.
+</p>
+</div>
+<p>It looks in this case like we “lose” a variable but, in a fixed-sum
+closed set, one variable is always defined by the total minus the sum of
+remaining variables, so this information was not really useful anyway.
+In our example the information on sand is still contained within the alr
+variables, <em>i.e</em>.:</p>
+<p><span class="math inline">\(Gravel.alr_i =
+\ln\frac{Gravel_i}{Sand_i}\)</span>; <span
+class="math inline">\(Clay.alr_i =\ln\frac{Clay_i}{Sand_i}\)</span>;
+<span class="math inline">\(Silt.alr_i =
+\ln\frac{Silt_i}{Sand_i}\)</span></p>
+<p>The collinearity of the closed data was not very pronounced (), but
+of course one of the parts of the composition (sand) was not included.
+If it is, the correlation matrix for untransformed variables looks like
+, with a large negative correlation between Gravel and Sand.</p>
+<pre class="r"><code>par(mar=c(1,5,5,3), mfrow=c(1,1), mgp=c(1.5,0.2,0), xpd=T)
+cor0 &lt;- rcorr(as.matrix(topsoil[,c(&quot;Gravel&quot;,&quot;Sand&quot;,&quot;Silt&quot;,&quot;Clay&quot;)]))
+corrplot(cor0$r, method=&quot;ellipse&quot;, cl.ratio = 0.25,
+         addCoef.col = &quot;black&quot;, tl.col = &quot;grey33&quot;, cl.pos = &quot;b&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/correlation%20matrix%20for%20all%20grainsize%20ategs-1.png" alt="\label{CompCor2}Correlations in soil texture variables (including Sand content) for untransformed (closed) grain size data." width="35%" />
+<p class="caption">
+Correlations in soil texture variables (including Sand content) for
+untransformed (closed) grain size data.
+</p>
+</div>
+<pre class="r"><code>par(mfrow=c(1,1), mar = c(4,4,1,1))</code></pre>
+<p>We now fit a linear model to both versions of the grain-size category
+data, using ordinary least-squares regression. For a “fair” comparison,
+we omit sand from both versions, since it is the denominator in the
+alr-transformed variables. <em>However</em>, the full textural data
+(Gravel <strong>+ Sand</strong> + Silt + Clay) are used as predictors
+first, so we can see what happens.</p>
+<pre class="r"><code>attach(topsoil)
+lm_clos4 &lt;- lm(Bulk.density ~ Gravel + Sand + Silt + Clay)
+summary(lm_clos4)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Bulk.density ~ Gravel + Sand + Silt + Clay)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.73789 -0.08611  0.00115  0.13677  0.53876 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -19.4238    28.6258  -0.679    0.499
+## Gravel        0.2082     0.2865   0.727    0.469
+## Sand          0.2093     0.2862   0.731    0.466
+## Silt          0.1937     0.2854   0.679    0.499
+## Clay          0.2028     0.2865   0.708    0.481
+## 
+## Residual standard error: 0.199 on 101 degrees of freedom
+## Multiple R-squared:  0.1768, Adjusted R-squared:  0.1442 
+## F-statistic: 5.425 on 4 and 101 DF,  p-value: 0.0005356</code></pre>
+<pre class="r"><code>lm_closed &lt;- lm(Bulk.density ~ Gravel + Silt + Clay)
+summary(lm_closed)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Bulk.density ~ Gravel + Silt + Clay)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.73567 -0.09140 -0.00114  0.14699  0.54390 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.511304   0.045509  33.209  &lt; 2e-16 ***
+## Gravel      -0.001299   0.001450  -0.896  0.37236    
+## Silt        -0.014973   0.004476  -3.345  0.00115 ** 
+## Clay        -0.006745   0.003466  -1.946  0.05437 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1985 on 102 degrees of freedom
+## Multiple R-squared:  0.1725, Adjusted R-squared:  0.1481 
+## F-statistic: 7.087 on 3 and 102 DF,  p-value: 0.0002255</code></pre>
+<pre class="r"><code>lm_open &lt;- lm(Bulk.density ~ Gravel.alr + Silt.alr + Clay.alr)
+summary(lm_open)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Bulk.density ~ Gravel.alr + Silt.alr + Clay.alr)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.73142 -0.07188  0.01841  0.13947  0.35855 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.147097   0.061838  18.550  &lt; 2e-16 ***
+## Gravel.alr   0.008215   0.012311   0.667  0.50611    
+## Silt.alr    -0.052821   0.019600  -2.695  0.00824 ** 
+## Clay.alr    -0.028090   0.017819  -1.576  0.11803    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2047 on 102 degrees of freedom
+## Multiple R-squared:  0.1201, Adjusted R-squared:  0.09418 
+## F-statistic: 4.639 on 3 and 102 DF,  p-value: 0.004408</code></pre>
+<pre class="r"><code>detach(topsoil)</code></pre>
+<p>The prediction ability, with any multiple regression model run, is
+not compelling (see the R-squared values!). The effects of at least one
+of the predictor variables (Silt) is significant for both models which
+omit sand. The collinearity in the full untransformed data is too great
+for any predictor to have a significant effect, even though it explains
+the most variance (R² = 0.177) and is overall significant (p(H₀) ≈
+0.0005).</p>
+<div id="activities-to-try-if-you-have-time" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Activities to try if
+you have time</h2>
+<ol style="list-style-type: decimal">
+<li>Run stepwise LDA predictor selection with different options.</li>
+<li>Run LDA using the original variables (ALR-transformed, of course) as
+predictors – is the correctness rate better or worse?</li>
+<li>Check that the optimised model(s) from stepwise selection really do
+achieve the same separation of categories as using all possible
+predictors.</li>
+<li>Try a supervised classification to predict whether a rock is from
+one of the four main types (felsic, intermediate, mafic, or
+ultramafic).</li>
+<li>Run a supervised classification on your own favourite set of
+compositionally closed data!</li>
+<li>Try different variations of (multiple) regression models on a more
+complex compositional dataset.</li>
+</ol>
+</div>
+<div id="references" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> References</h2>
+<p>Campbell, G. P., Curran, J. M., Miskelly, G. M., Coulson, S., Yaxley,
+G. M., Grunsky, E. C., &amp; Simon C. Cox. (2009). Compositional data
+analysis for elemental data in forensic science. <em>Forensic Science
+International</em>, <strong>188</strong>, 81-90. <a
+href="https://doi.org/10.1016/j.forsciint.2009.03.018"
+class="uri">https://doi.org/10.1016/j.forsciint.2009.03.018</a></p>
+<p>Fox, J. (2022). <em>RcmdrMisc: R Commander Miscellaneous
+Functions</em>. R package version 2.7-2. <a
+href="https://CRAN.R-project.org/package=RcmdrMisc"
+class="uri">https://CRAN.R-project.org/package=RcmdrMisc</a></p>
+<p>Fox, John and Sanford Weisberg (2019). <em>An {R} Companion to
+Applied Regression</em> (<strong>car</strong>), Third Edition. Thousand
+Oaks CA: Sage. URL: <a
+href="https://socialsciences.mcmaster.ca/jfox/Books/Companion/"
+class="uri">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a></p>
+<p>Garrett, R.G. (2018). <em>rgr: Applied Geochemistry EDA</em>. R
+package version 1.1.15. <a href="https://CRAN.R-project.org/package=rgr"
+class="uri">https://CRAN.R-project.org/package=rgr</a></p>
+<p>Grunsky, E. C. (2010). The interpretation of geochemical survey data.
+<em>Geochemistry: Exploration, Environment, Analysis</em>,
+<strong>10</strong>, 27-74. <a
+href="https://doi.org/10.1144/1467-7873/09-210"
+class="uri">https://doi.org/10.1144/1467-7873/09-210</a></p>
+<p>Kassambara, A. and Mundt, F. (2020). <em>factoextra: Extract and
+Visualize the Results of Multivariate Data Analyses</em>. R package
+version 1.0.7. <a href="https://CRAN.R-project.org/package=factoextra"
+class="uri">https://CRAN.R-project.org/package=factoextra</a></p>
+<p>Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M., Hornik,
+K.(2021). <em>cluster: Cluster Analysis Basics and Extensions</em>. R
+package version 2.1.2. <a
+href="https://CRAN.R-project.org/package=cluster"
+class="uri">https://CRAN.R-project.org/package=cluster</a></p>
+<p>Reimann, C., Filzmoser, P., Garrett, R. G., and Dutter, R. (2008).
+<em>Statistical Data Analysis Explained: Applied Environmental
+Statistics with R</em> (First ed.). John Wiley &amp; Sons, Chichester,
+UK.</p>
+<p>Venables, W. N. and Ripley, B. D. (2002) <em>Modern Applied
+Statistics with S</em> (<strong>MASS</strong>). Fourth Edition.
+Springer, New York. ISBN 0-387-95457-0. <a
+href="http://www.stats.ox.ac.uk/pub/MASS4/"
+class="uri">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
+<p>Weihs, C., Ligges, U., Luebke, K. and Raabe, N. (2005).
+<strong>klaR</strong> – Analyzing German Business Cycles.
+<strong>In</strong> Baier, D., Decker, R. and Schmidt-Thieme, L. (eds.).
+<em>Data Analysis and Decision Support</em>, 335-343, Springer-Verlag,
+Berlin.</p>
+<p>Wickham, H. (2019). <em>stringr: Simple, Consistent Wrappers for
+Common String Operations</em>. R package version 1.4.0. <a
+href="https://CRAN.R-project.org/package=stringr"
+class="uri">https://CRAN.R-project.org/package=stringr</a></p>
+<p>Xu, N., Rate, A. W., &amp; Morgan, B. (2018). From source to sink:
+Rare-earth elements trace the legacy of sulfuric dredge spoils on
+estuarine sediments. <em>Science of The Total Environment</em>,
+<strong>637-638</strong>, 1537-1549. <a
+href="https://doi.org/10.1016/j.scitotenv.2018.04.398"
+class="uri">https://doi.org/10.1016/j.scitotenv.2018.04.398</a></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

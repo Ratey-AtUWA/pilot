@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>compositional_Pt1-PCA.knit</title>
+
+<script src="compositional_Pt1-PCA_files/header-attrs-2.14/header-attrs.js"></script>
+<script src="compositional_Pt1-PCA_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="compositional_Pt1-PCA_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="compositional_Pt1-PCA_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="compositional_Pt1-PCA_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="compositional_Pt1-PCA_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="compositional_Pt1-PCA_files/navigation-1.1/tabsets.js"></script>
+<link href="compositional_Pt1-PCA_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="compositional_Pt1-PCA_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="compositional_Pt1-PCA_files/tabwid-1.0.0/tabwid.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<p><img src="compositional_Pt1-PCA_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<div id="principal-components-analysis" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span> Principal components
+analysis</h1>
+<p>It is quite common to measure many variables in environmental science
+and other disciplines. Using various types of <em>ordination
+analysis</em>, we can use the information contained in multiple
+variables to create a reduced subset of variables containing nearly the
+same amount of information. Ordination methods are also referred to, for
+this reason, as ‘data reduction’ methods and are commonly used for
+multivariate analysis.</p>
+<p>One of the earliest and most widely used ordination methods for
+exploration and dimension-reduction of multivariate data is
+<strong>principal components analysis</strong> (PCA). Imagine a dataset
+with many samples (rows) and n continuous numeric variables (columns)
+which contain quantitative information about each sample such as
+concentrations, heights, velocities, <em>etc</em>. For these <em>n</em>
+variables/dimensions, the principal component calculation generates
+<em>n</em> new variables, or principal components, which are each a
+function of the set of all the original variables (so each principal
+component is defined by a weighting or coefficient for each of the
+original variables). We may choose to omit some variables from the
+analysis if they contain too many missing observations or if there is
+another valid reason to doubt their integrity. Since each principal
+component is selected to account for successively smaller proportions of
+the multiple variance, it is usually the first few principal components
+which explain most of the variance and therefore contain the most useful
+information. We conventionally visualize this in a ‘scree plot’ (), a
+kind of bar graph showing the decrease in variance accounted for by each
+component.</p>
+<pre class="r"><code>#
+data0 &lt;- na.omit(cities[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+pca_cities_clos &lt;- prcomp(data0, scale. = TRUE)
+cat(&quot;Variable weightings (rotations) - closed data\n&quot;)
+pca_cities_clos$rot
+cat(&quot;...\n\nComponent Variances - Closed data\n&quot;)
+pca_cities_clos$sdev^2
+cat(&quot;...\n\nProportions of variance explained by each component&quot;,
+    &quot;\nCLR-transformed (open) data\n&quot;)
+round(pca_cities_clos$sdev^2/sum(pca_cities_clos$sdev^2),3)
+cat(&quot;\n--------------------\nVariable weightings (rotations) - open data\n&quot;)
+
+data0 &lt;- na.omit(cities_clr[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+pca_cities_open &lt;- prcomp(data0, scale. = TRUE)
+pca_cities_open$rot
+cat(&quot;...\n\nComponent Variances - CLR-transformed (open) data\n&quot;)
+pca_cities_open$sdev^2
+cat(&quot;...\n\nProportions of variance explained by each component&quot;,
+    &quot;\nCLR-transformed (open) data\n&quot;)
+round(pca_cities_open$sdev^2/sum(pca_cities_open$sdev^2),3)
+rm(data0)</code></pre>
+<pre><code>## Variable weightings (rotations) - closed data
+##                    PC1        PC2        PC3         PC4
+## Compact     -0.5582052  0.5356252 0.05639404 -0.63113567
+## Open        -0.3409659 -0.7576682 0.46899761 -0.29953715
+## Lightweight  0.3992211  0.3417785 0.85067121  0.01297763
+## Industry    -0.6424731  0.1491041 0.23069343  0.71538580
+## ...
+## 
+## Component Variances - Closed data
+## [1] 1.5860528 1.0026876 0.8705986 0.5406610
+## ...
+## 
+## Proportions of variance explained by each component 
+## CLR-transformed (open) data
+## [1] 0.397 0.251 0.218 0.135
+## 
+## --------------------
+## Variable weightings (rotations) - open data
+##                    PC1         PC2        PC3        PC4
+## Compact     -0.2081793  0.75498116  0.3214239 -0.5323077
+## Open        -0.3535490 -0.62668193  0.5577101 -0.4138022
+## Lightweight  0.6833728 -0.17189496 -0.2520621 -0.6632635
+## Industry    -0.6038759 -0.08789385 -0.7225723 -0.3248042
+## ...
+## 
+## Component Variances - CLR-transformed (open) data
+## [1] 1.975945e+00 1.511204e+00 5.128514e-01 1.470492e-31
+## ...
+## 
+## Proportions of variance explained by each component 
+## CLR-transformed (open) data
+## [1] 0.494 0.378 0.128 0.000</code></pre>
+<p>As well as the component variances, the useful results of principal
+components analysis include the variable weightings or ‘rotations’ for
+each principal component. Referring to just the output for <strong>open
+data</strong> above, PC1 (which explains the most multivariate variance)
+has its greatest absolute contributions from the Lightweight and
+Industry variables, which act in opposite directions (remembering that
+the sign is arbitrary, but that <em>relative</em> sign and magnitude are
+important). PC2 contains mainly variance from the Compact and Open
+variables, PC3 (which explains much less variance) reflects
+Open/Industry, and we can ignore PC4 as it has a negligible component
+variance.</p>
+<p>In addition, every individual observation (sample) is a multivariate
+point, the observation scores for all samples in each principal
+component based on the values of the variables used in PCA for that
+sample. It is conventional to plot both of these two types of output in
+a principal component <strong>biplot</strong>, as shown in . Before
+discussing the biplot, we should note that the sign (positive or
+negative) of variable weightings and observation scores (<em>i.e</em>.
+the direction of the axes) is arbitrary and should not affect our
+interpretations.</p>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt1-PCA_files/figure-html/scree%20plots-1.png" alt="\label{screeplots}PCA scree plots for urban land-use data, for: (a) compositionally closed proportions; (b) data corrected for closure using CLR-transformation." width="60%" />
+<p class="caption">
+PCA scree plots for urban land-use data, for: (a) compositionally closed
+proportions; (b) data corrected for closure using CLR-transformation.
+</p>
+</div>
+<p>There are informal ‘rules’ for deciding which of the principal
+components contain useful information:</p>
+<ol style="list-style-type: decimal">
+<li>Components having variance greater than 1 (the ‘Kaiser’
+criterion)</li>
+<li>Components up to a cumulative proportion of variance explained of
+0.8 (80%)</li>
+</ol>
+<p>For example, for the open data, the component variances are PC1
+1.976, PC2 1.511, PC3 0.513, PC4 1.5E-31 – so only PC1 and PC2 meet the
+first criterion. Similarly, the <em>cumulative</em> proportions of
+variance explained by each component are PC1 0.494, PC1+PC2 0.872, so by
+criterion 2 no useful information is contained in principal components
+&gt;2. In this example both criteria agree (they don’t always!).</p>
+<p>Another part of the PCA output that we need to know about is the set
+of <em>observation scores</em>, essentially showing where each
+observation (each city, in these data) plots in principal component
+space. We’re only interested in PC1 and PC2, since they are the only
+components meeting the criteria. The observation scores for the first
+rows of the data are as follows ():</p>
+<pre class="r"><code>OScores &lt;- data.frame(City=cities_clr$City[1:8],
+                      PC1_closed=round(pca_cities_clos$x[1:8,1],3),
+                      PC2_closed=round(pca_cities_clos$x[1:8,2],3),
+                      PC1_open=round(pca_cities_open$x[1:8,1],3),
+                      PC2_open=round(pca_cities_open$x[1:8,2],3))
+ft &lt;- flextable(OScores)
+ft &lt;- theme_zebra(ft,odd_header = &quot;#D0E0FF&quot;, even_header = &quot;#D0E0FF&quot;)
+ft &lt;- border_outer(ft, border = BorderDk, part = &quot;all&quot;)
+ft %&gt;% border_inner_v(border=BorderLt, part=&quot;header&quot;)</code></pre>
+<template id="a4df547a-58d5-497b-a69c-28cf88f4c0e4"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-f6792170{}.cl-f6672330{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-f6672358{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-f66756ac{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-f66756b6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-f667ddac{width:54pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667ddb6{width:54pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667ddc0{width:54pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667ddca{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667ddd4{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667ddd5{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667ddfc{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667de06{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667de07{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667de10{width:54pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667de2e{width:54pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f667de2f{width:54pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-f6792170'>
+<caption class>
+<p>PCA observation scores for the first 8 rows of the cities data
+(closed and open)</p>
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-f667de10"><p class="cl-f66756ac"><span class="cl-f6672330">City</span></p></td><td class="cl-f667de2e"><p class="cl-f66756b6"><span class="cl-f6672330">PC1_closed</span></p></td><td class="cl-f667de2e"><p class="cl-f66756b6"><span class="cl-f6672330">PC2_closed</span></p></td><td class="cl-f667de2e"><p class="cl-f66756b6"><span class="cl-f6672330">PC1_open</span></p></td><td class="cl-f667de2f"><p class="cl-f66756b6"><span class="cl-f6672330">PC2_open</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-f667ddc0"><p class="cl-f66756ac"><span class="cl-f6672358">New York</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-1.885</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-1.095</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-0.896</span></p></td><td class="cl-f667ddb6"><p class="cl-f66756b6"><span class="cl-f6672358">0.155</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f667ddd4"><p class="cl-f66756ac"><span class="cl-f6672358">Sao Paulo</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">-2.054</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">0.732</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">-0.646</span></p></td><td class="cl-f667ddd5"><p class="cl-f66756b6"><span class="cl-f6672358">0.722</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f667ddc0"><p class="cl-f66756ac"><span class="cl-f6672358">Shanghai</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-2.889</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-0.909</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-1.413</span></p></td><td class="cl-f667ddb6"><p class="cl-f66756b6"><span class="cl-f6672358">-0.467</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f667ddd4"><p class="cl-f66756ac"><span class="cl-f6672358">Beijing</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">-1.665</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">-1.230</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">-0.858</span></p></td><td class="cl-f667ddd5"><p class="cl-f66756b6"><span class="cl-f6672358">0.098</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f667ddc0"><p class="cl-f66756ac"><span class="cl-f6672358">Jakarta</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-2.515</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">2.528</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-0.592</span></p></td><td class="cl-f667ddb6"><p class="cl-f66756b6"><span class="cl-f6672358">2.491</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f667ddd4"><p class="cl-f66756ac"><span class="cl-f6672358">Guangzhou</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">-2.679</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">1.453</span></p></td><td class="cl-f667ddca"><p class="cl-f66756b6"><span class="cl-f6672358">-1.099</span></p></td><td class="cl-f667ddd5"><p class="cl-f66756b6"><span class="cl-f6672358">0.957</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f667ddc0"><p class="cl-f66756ac"><span class="cl-f6672358">Melbourne</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-1.871</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">1.375</span></p></td><td class="cl-f667ddac"><p class="cl-f66756b6"><span class="cl-f6672358">-0.808</span></p></td><td class="cl-f667ddb6"><p class="cl-f66756b6"><span class="cl-f6672358">0.991</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f667de06"><p class="cl-f66756ac"><span class="cl-f6672358">Paris</span></p></td><td class="cl-f667ddfc"><p class="cl-f66756b6"><span class="cl-f6672358">-0.632</span></p></td><td class="cl-f667ddfc"><p class="cl-f66756b6"><span class="cl-f6672358">-2.171</span></p></td><td class="cl-f667ddfc"><p class="cl-f66756b6"><span class="cl-f6672358">-0.615</span></p></td><td class="cl-f667de07"><p class="cl-f66756b6"><span class="cl-f6672358">-0.489</span></p></td></tr></tbody></table></div></template>
+<div class="flextable-shadow-host" id="19831afd-5902-4ef8-ab4c-3dbf7ce60b5e"></div>
+<script>
+var dest = document.getElementById("19831afd-5902-4ef8-ab4c-3dbf7ce60b5e");
+var template = document.getElementById("a4df547a-58d5-497b-a69c-28cf88f4c0e4");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script>
+
+<pre class="r"><code>require(car) # for data ellipses (see Fig 1.4)
+par(mfrow=c(1,2), mar = c(3.5,3.5,3.5,3.5), oma = c(0,0,0,0), 
+    mgp=c(1.7,0.3,0), tcl = 0.25, font.lab=2,
+    lend = &quot;square&quot;, ljoin = &quot;mitre&quot;)
+# choose components and set scaling factor (sf)
+v1 &lt;- 1; v2 &lt;- 2; sf &lt;- 0.45
+
+biplot(pca_cities_clos, choices = c(v1,v2), col = c(2,1), cex=c(1,0.0),
+       pc.biplot = FALSE, scale = 0.4, arrow.len = 0.08,
+       xlim = c(-1.5,1.5), ylim = c(-1.2,1.2),
+       xlab = paste0(&quot;Scaled PC&quot;,v1,&quot; Component Loadings&quot;),
+       ylab = paste0(&quot;Scaled PC&quot;,v2,&quot; Component Loadings&quot;))
+mtext(paste0(&quot;Scaled PC&quot;,v1,&quot; Observation Scores&quot;), 3, 1.6, font = 2)
+mtext(paste0(&quot;Scaled PC&quot;,v2,&quot; Observation Scores&quot;), 4, 1.6, font = 2)
+mtext(&quot;Untransformed data\n(compositionally closed)&quot;,
+      side = 3, line = -2, font = 2, adj = 0.98)
+data0 &lt;- na.omit(cities[,c(&quot;Type&quot;,&quot;Global&quot;,&quot;Region&quot;,&quot;Compact&quot;,
+                           &quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+points(pca_cities_clos$x[,v1]*sf, pca_cities_clos$x[,v2]*sf*1.5,
+       pch = c(22,21,24,0,1)[data0$Type],
+       lwd = 2, bg = c(2,3,4,5,6)[data0$Type],
+       col = c(2,3,8,9,11)[data0$Type],
+       cex = c(1.2,1.4,1.2,1.2,1.4)[data0$Type])
+dataEllipse(x=pca_cities_clos$x[,v1]*sf, y=pca_cities_clos$x[,v2]*sf*1.5,
+            groups = data0$Type, add = TRUE, plot.points = FALSE, 
+            levels = c(0.9), center.pch = 3, col = c(2,3,8,9,11),
+            lty = 2, lwd = 1, center.cex = 2.4, group.labels = &quot;&quot;)
+legend(&quot;bottomright&quot;, bty = &quot;o&quot;, inset = 0.03,
+       box.col = &quot;gray&quot;, box.lwd = 2, bg = 14,
+       legend = levels(data0$Type),
+       pch = c(22,21,24,0,1), pt.lwd = 2,
+       col = c(2,3,8,9,11), pt.bg = c(2,3,4,5,6),
+       pt.cex = c(1.2, 1.4, 1.2,1.2,1.4),
+       cex = 0.9, y.intersp = 0.9)
+mtext(&quot;(a)&quot;, side = 3, line = -1.5, font = 2, adj = 0.02, cex = 1.25)
+
+sf &lt;- 0.65 # adjust scaling factor for next PCA biplot
+
+biplot(pca_cities_open, choices = c(v1,v2), col = c(2,1), cex=c(0.8,1),
+       pc.biplot = FALSE, scale = 0.2, arrow.len = 0.08,
+       xlim = c(-1.2,3.2), ylim = c(-3.5,1.7),
+       xlab = paste0(&quot;Scaled PC&quot;,v1,&quot; Component Loadings&quot;),
+       ylab = paste0(&quot;Scaled PC&quot;,v2,&quot; Component Loadings&quot;)) 
+mtext(paste0(&quot;Scaled PC&quot;,v1,&quot; Observation Scores&quot;), 3, 1.6, font = 2)
+mtext(paste0(&quot;Scaled PC&quot;,v2,&quot; Observation Scores&quot;), 4, 1.6, font = 2)
+mtext(&quot;CLR\ntransformed\ndata\n(no closure)&quot;,
+      side = 3, line = -4, font = 2, adj = 0.98)
+data0 &lt;- na.omit(cities_clr[,c(&quot;Type&quot;,&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+points(pca_cities_open$x[,v1]*sf, pca_cities_open$x[,v2]*sf,
+       pch = c(22,21,24,0,1)[data0$Type],
+       lwd=2, bg = c(2,3,4,5,6)[data0$Type],
+       col = c(2,3,8,9,11)[data0$Type],
+       cex = c(1.2,1.4,1.2,1.2,1.4)[data0$Type])
+dataEllipse(x=pca_cities_open$x[,v1]*sf, y=pca_cities_open$x[,v2]*sf*1.5,
+            groups = data0$Type, add = TRUE, plot.points = FALSE, 
+            levels = c(0.9), center.pch = 3, col = c(2,3,8,9,11),
+            lty = 2, lwd = 1, center.cex = 2.4, group.labels = &quot;&quot;)
+legend(&quot;bottomright&quot;, bty = &quot;o&quot;, inset = 0.03,
+       box.col = &quot;gray&quot;, box.lwd = 2, bg = 14,
+       legend = levels(data0$Type),
+       pch = c(22,21,24,0,1), pt.lwd = 2,
+       col = c(2,3,8,9,11), pt.bg = c(2,3,4,5,6),
+       pt.cex = c(1.2, 1.4, 1.2,1.2,1.4),
+       cex = 0.9, y.intersp = 0.9)
+mtext(&quot;(b)&quot;, side = 3, line = -1.5, font = 2, adj = 0.02, cex = 1.25)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt1-PCA_files/figure-html/visualise%20PCA-1.png" alt="\label{PCAplots}PCA biplots for urban land-use data, with observations categorised by type for: (a) compositionally closed proportions; (b) data corrected for closure using CLR-transformation." width="1152" />
+<p class="caption">
+PCA biplots for urban land-use data, with observations categorised by
+type for: (a) compositionally closed proportions; (b) data corrected for
+closure using CLR-transformation.
+</p>
+</div>
+<p>PCA biplots are useful, because the <em>variable weightings</em>
+group together for variables (measurements) that are related to one
+another. For example, in the biplots in , the variables are relative
+land areas under 4 land-use categories (which have been corrected in (b)
+for compositional closure using the CLR transformation). These variables
+are shown as vectors (arrows) in the biplot of principal components PC1
+and PC2, and variables which are related have vectors of similar length
+and/or direction. For example, the variables ‘Compact’ and ‘Industry’
+plot closely together on biplot (a), suggesting some relationship
+between these land use categories. Removing closure in our data (biplot
+(b)) seems to remove this relationship, so it is probably not real!</p>
+<p>The other main information we obtain from principal components
+biplots is from the <em>observation scores</em> (see above). These will
+plot at locations similar to their dominant variables: for example, in
+(b), the ‘Compact’ cities all plot towards the top of the biplot in the
+same direction as the ‘Compact’ variable weighting vector. This suggests
+that compact cities have greater proportions of compact land use – which
+should not be too surprising! Note that in the biplot for closed data in
+(a), the separation of cities is not so clear.</p>
+<p><strong>Some other things to try</strong></p>
+<p>We could also group the observation scores in our biplot by a
+different factor in our dataset. For example, it would be interesting to
+see if we could observe any separation of cities by geographical region
+in the principal components analysis. You might want to practice your
+<strong>R</strong> coding on this problem!</p>
+<div id="references-and-r-packages" class="section level3"
+number="1.0.1">
+<h3><span class="header-section-number">1.0.1</span> References and R
+Packages</h3>
+<p>Fox, J. (2022). <em>RcmdrMisc: R Commander Miscellaneous
+Functions</em>. R package version 2.7-2. <a
+href="https://CRAN.R-project.org/package=RcmdrMisc"
+class="uri">https://CRAN.R-project.org/package=RcmdrMisc</a></p>
+<p>John Fox and Sanford Weisberg (2019). <em>An {R} Companion to Applied
+Regression</em> (<strong>car</strong>), Third Edition. Thousand Oaks CA:
+Sage. URL: <a
+href="https://socialsciences.mcmaster.ca/jfox/Books/Companion/"
+class="uri">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a></p>
+<p>Garrett, R.G. (2018). <em>rgr: Applied Geochemistry EDA</em>. R
+package version 1.1.15. <a href="https://CRAN.R-project.org/package=rgr"
+class="uri">https://CRAN.R-project.org/package=rgr</a></p>
+<p>Hu, J., Wang, Y., Taubenböck, H., Zhu, X.X. (2021). Land consumption
+in cities: A comparative study across the globe. <em>Cities</em>,
+<strong>113</strong>: 103163, <a
+href="https://doi.org/10.1016/j.cities.2021.103163"
+class="uri">https://doi.org/10.1016/j.cities.2021.103163</a>.</p>
+<p>Kassambara, A. and Mundt, F. (2020). <em>factoextra: Extract and
+Visualize the Results of Multivariate Data Analyses</em>. R package
+version 1.0.7. <a href="https://CRAN.R-project.org/package=factoextra"
+class="uri">https://CRAN.R-project.org/package=factoextra</a></p>
+<p>Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M., Hornik,
+K.(2021). <em>cluster: Cluster Analysis Basics and Extensions</em>. R
+package version 2.1.2. <a
+href="https://CRAN.R-project.org/package=cluster"
+class="uri">https://CRAN.R-project.org/package=cluster</a></p>
+<p>Reimann, C., Filzmoser, P., Garrett, R. G., &amp; Dutter, R. (2008).
+<em>Statistical Data Analysis Explained: Applied Environmental
+Statistics with R</em> (First ed.). John Wiley &amp; Sons, Chichester,
+UK.</p>
+<p>Venables, W. N. &amp; Ripley, B. D. (2002) <em>Modern Applied
+Statistics with S</em> (<strong>MASS</strong>). Fourth Edition.
+Springer, New York. ISBN 0-387-95457-0. <a
+href="http://www.stats.ox.ac.uk/pub/MASS4/"
+class="uri">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
+<p>Wickham, H. (2019). <em>stringr: Simple, Consistent Wrappers for
+Common String Operations</em>. R package version 1.4.0. <a
+href="https://CRAN.R-project.org/package=stringr"
+class="uri">https://CRAN.R-project.org/package=stringr</a></p>
+<p>Xu, N., Rate, A. W., &amp; Morgan, B. (2018). From source to sink:
+Rare-earth elements trace the legacy of sulfuric dredge spoils on
+estuarine sediments. <em>Science of The Total Environment</em>,
+<strong>637-638</strong>, 1537-1549. <a
+href="https://doi.org/10.1016/j.scitotenv.2018.04.398"
+class="uri">https://doi.org/10.1016/j.scitotenv.2018.04.398</a></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
