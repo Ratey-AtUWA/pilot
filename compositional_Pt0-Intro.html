@@ -178,7 +178,7 @@ pre code {
        <p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
        <hr width="50%">
 <div id="introduction" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Introduction</h1>
+<h1><span class="header-section-number">0</span> Introduction</h1>
 <p>Compositional data, defined as any measurements which are proportions
 of some whole, are common in many disciplines, including (Table
 0.1):</p>
@@ -324,16 +324,16 @@ palette(c(&quot;black&quot;, &quot;#003087&quot;, &quot;#DAAA00&quot;, &quot;#8F
           &quot;#001D51&quot;, &quot;#B7A99F&quot;, &quot;#A51890&quot;, &quot;#C5003E&quot;, &quot;#FDC596&quot;, 
           &quot;#AD5D1E&quot;, &quot;gray40&quot;, &quot;gray85&quot;, &quot;#FFFFFF&quot;, &quot;transparent&quot;))</code></pre>
 <div id="load-the-cities-data" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Load the cities
+<h2><span class="header-section-number">0.1</span> Load the cities
 data</h2>
 <p><strong>Data are from</strong>: Fig. 11 <em>in</em> Hu, J., Wang, Y.,
 Taubenböck, H., Zhu, X.X., 2021. Land consumption in cities: A
 comparative study across the globe. <em>Cities</em>,
 <strong>113</strong>: 103163, <a
 href="https://doi.org/10.1016/j.cities.2021.103163"
-class="uri">https://doi.org/10.1016/j.cities.2021.103163</a>. (digitised
+class="uri" target="_blank">https://doi.org/10.1016/j.cities.2021.103163</a>. (digitised
 from figure using <a href="https://automeris.io/WebPlotDigitizer/"
-class="uri">https://automeris.io/WebPlotDigitizer/</a>)</p>
+class="uri" target="_blank">https://automeris.io/WebPlotDigitizer/</a>)</p>
 <p>After reading the data (Table 0.2) we make a column containing abbreviated codes
 for the land-use type factor, using the function to substitute character
 strings.</p>
@@ -419,7 +419,7 @@ are stored as factors in the R data frame.</p>
 </div>
 <div id="make-clr-transformed-dataset" class="section level2"
 number="1.2">
-<h2><span class="header-section-number">1.2</span> Make CLR-transformed
+<h2><span class="header-section-number">0.2</span> Make CLR-transformed
 dataset</h2>
 <pre class="r"><code>cities_clr &lt;- cities
 cities_clr[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)] &lt;- 
@@ -436,7 +436,7 @@ head(cities_clr[,1:8])</code></pre>
 </div>
 <div id="compare-correlation-matrices" class="section level2"
 number="1.3">
-<h2><span class="header-section-number">1.3</span> Compare correlation
+<h2><span class="header-section-number">0.3</span> Compare correlation
 matrices</h2>
 <div class="figure" style="text-align: center">
 <img src="correlation%20matrix%20comnparison-1.png" 
@@ -459,39 +459,39 @@ of variables (maybe using the scatterplotMatrix() function in the
 </ul>
 </div>
 <div id="references-and-r-packages" class="section level2" number="1.4">
-       <hr width="50%">
+       <hr width="50%" align="left">
        <p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
-       <hr width="50%">
-<h2><span class="header-section-number">1.4</span> References and R
+       <hr width="50%" align="left">
+<h2><span class="header-section-number">0.4</span> References and R
 Packages</h2>
 <p>Fox, J. (2022). <em>RcmdrMisc: R Commander Miscellaneous
 Functions</em>. R package version 2.7-2. <a
 href="https://CRAN.R-project.org/package=RcmdrMisc"
-class="uri">https://CRAN.R-project.org/package=RcmdrMisc</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=RcmdrMisc</a></p>
 <p>John Fox and Sanford Weisberg (2019). <em>An {R} Companion to Applied
 Regression</em> (<strong>car</strong>), Third Edition. Thousand Oaks CA:
 Sage. URL: <a
 href="https://socialsciences.mcmaster.ca/jfox/Books/Companion/"
-class="uri">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a></p>
+class="uri" target="_blank">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a></p>
 <p>Garrett, R.G. (2018). <em>rgr: Applied Geochemistry EDA</em>. R
 package version 1.1.15. <a href="https://CRAN.R-project.org/package=rgr"
-class="uri">https://CRAN.R-project.org/package=rgr</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=rgr</a></p>
 <p>Greenacre, M. (2018). <em>Compositional Data Analysis in
 Practice</em>. CRC Press LLC, Boca Raton, FL, USA.</p>
 <p>Hu, J., Wang, Y., Taubenböck, H., Zhu, X.X. (2021). Land consumption
 in cities: A comparative study across the globe. <em>Cities</em>,
 <strong>113</strong>: 103163, <a
 href="https://doi.org/10.1016/j.cities.2021.103163"
-class="uri">https://doi.org/10.1016/j.cities.2021.103163</a>.</p>
+class="uri" target="_blank">https://doi.org/10.1016/j.cities.2021.103163</a>.</p>
 <p>Kassambara, A. and Mundt, F. (2020). <em>factoextra: Extract and
 Visualize the Results of Multivariate Data Analyses</em>. R package
 version 1.0.7. <a href="https://CRAN.R-project.org/package=factoextra"
-class="uri">https://CRAN.R-project.org/package=factoextra</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=factoextra</a></p>
 <p>Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M., Hornik,
 K.(2021). <em>cluster: Cluster Analysis Basics and Extensions</em>. R
 package version 2.1.2. <a
 href="https://CRAN.R-project.org/package=cluster"
-class="uri">https://CRAN.R-project.org/package=cluster</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=cluster</a></p>
 <p>Reimann, C., Filzmoser, P., Garrett, R. G., &amp; Dutter, R. (2008).
 <em>Statistical Data Analysis Explained: Applied Environmental
 Statistics with R</em> (First ed.). John Wiley &amp; Sons, Chichester,
@@ -500,18 +500,21 @@ UK.</p>
 Statistics with S</em> (<strong>MASS</strong>). Fourth Edition.
 Springer, New York. ISBN 0-387-95457-0. <a
 href="http://www.stats.ox.ac.uk/pub/MASS4/"
-class="uri">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
+class="uri" target="_blank">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
 <p>Wickham, H. (2019). <em>stringr: Simple, Consistent Wrappers for
 Common String Operations</em>. R package version 1.4.0. <a
 href="https://CRAN.R-project.org/package=stringr"
-class="uri">https://CRAN.R-project.org/package=stringr</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=stringr</a></p>
 <p>Xu, N., Rate, A. W., &amp; Morgan, B. (2018). From source to sink:
 Rare-earth elements trace the legacy of sulfuric dredge spoils on
 estuarine sediments. <em>Science of The Total Environment</em>,
 <strong>637-638</strong>, 1537-1549. <a
 href="https://doi.org/10.1016/j.scitotenv.2018.04.398"
-class="uri">https://doi.org/10.1016/j.scitotenv.2018.04.398</a></p>
+class="uri" target="_blank">https://doi.org/10.1016/j.scitotenv.2018.04.398</a></p>
 </div>
+       <hr width="50%" align="left">
+       <p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+       <hr width="50%" align="left">
 </div>
 
 

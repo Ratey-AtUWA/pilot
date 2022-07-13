@@ -179,7 +179,7 @@ pre code {
 <p><em>We are using the same cities land-use dataset from the previous
 session, from Hu et al. (2021).</em></p>
 <div id="hierarchical-clustering" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Hierarchical
+<h1><span class="header-section-number">3</span> Hierarchical
 clustering</h1>
 <p>Hierarchical clustering is another <em>unsupervised</em>
 classification method, which groups observations into successively
@@ -189,7 +189,7 @@ requires generation of a distance matrix, following which the clustering
 procedure can begin.</p>
 <div id="create-dissimilarity-distance-matrix-for-closed-data"
 class="section level3" number="1.0.1">
-<h3><span class="header-section-number">1.0.1</span> Create
+<h3><span class="header-section-number">3.0.1</span> Create
 dissimilarity (distance) matrix for closed data</h3>
 <pre class="r"><code>dataHC &lt;- na.omit(cities[,c(&quot;City&quot;,&quot;sType&quot;,&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
 row.names(dataHC) &lt;- paste0(dataHC$City,&quot;(&quot;,dataHC$sType, seq(1,NROW(dataHC)),&quot;)&quot;)
@@ -211,7 +211,7 @@ round(as.matrix(cities_clos_diss)[1:8, 1:4], 0)</code></pre>
 </div>
 <div id="create-dissimilarity-distance-matrix-for-open-data"
 class="section level3" number="1.0.2">
-<h3><span class="header-section-number">1.0.2</span> Create
+<h3><span class="header-section-number">3.0.2</span> Create
 dissimilarity (distance) matrix for open data</h3>
 <pre class="r"><code>dataHC &lt;- na.omit(cities_clr[,c(&quot;City&quot;,&quot;sType&quot;,&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
 row.names(dataHC) &lt;- paste0(dataHC$City,&quot;(&quot;,dataHC$sType, seq(1,NROW(dataHC)),&quot;)&quot;)
@@ -246,7 +246,7 @@ for additional information.]</p>
 </div>
 <div id="perform-hierarchical-clustering-for-closed-data"
 class="section level3" number="1.0.3">
-<h3><span class="header-section-number">1.0.3</span> Perform
+<h3><span class="header-section-number">3.0.3</span> Perform
 hierarchical clustering for closed data</h3>
 <p>The hierarchical clustering algorithm <strong>(1)</strong> assigns
 each observation to its own cluster, each containing only one
@@ -295,11 +295,11 @@ lower the cut level, the more clusters we will have. For both the closed
 and open data we have shown cuts in Figure 3.1 resulting in 3, 4, or 5 clusters.
 There are numerous ways to decide where to make the cut; see Kassambara
 (2018) (<a href="https://shorturl.at/cntxH"
-class="uri">https://shorturl.at/cntxH</a> ) for some of these.</p>
+class="uri" target="_blank">https://shorturl.at/cntxH</a> ) for some of these.</p>
 </div>
 <div id="assess-the-validity-of-cluster-trees" class="section level3"
 number="1.0.4">
-<h3><span class="header-section-number">1.0.4</span> Assess the validity
+<h3><span class="header-section-number">3.0.4</span> Assess the validity
 of cluster trees</h3>
 <p><strong>For closed data:</strong></p>
 <pre class="r"><code>cities_clos_coph &lt;- cophenetic(cities_clos_hc)
@@ -328,7 +328,7 @@ of the applicable distance matrices.</p>
 </div>
 <div id="find-the-optimum-number-of-clusters" class="section level3"
 number="1.0.5">
-<h3><span class="header-section-number">1.0.5</span> Find the optimum
+<h3><span class="header-section-number">3.0.5</span> Find the optimum
 number of clusters</h3>
 <p>We did a similar analysis on the same datasets (closed and open
 cities land-use) for K-means clustering, estimating the optimum number
@@ -355,7 +355,7 @@ Figure 3.2: Estmation of the optimum number of clusters by the silhouette method
 </div>
 <div id="cut-dendrograms-into-clusters" class="section level3"
 number="1.0.6">
-<h3><span class="header-section-number">1.0.6</span> Cut dendrograms
+<h3><span class="header-section-number">3.0.6</span> Cut dendrograms
 into clusters</h3>
 <p>This was illustrated in Figure 3.1 above, and we now investigate the clustering
 in more detail, assuming 4 clusters for both closed and open data.</p>
@@ -511,7 +511,7 @@ open data is shown in Figure 3.3.</p>
 </div>
 <div id="plot-dendrograms-comparing-closed-and-open-data-with-cuts"
 class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Plot dendrograms
+<h2><span class="header-section-number">3.1</span> Plot dendrograms
 comparing closed and open data with cuts</h2>
 <pre class="r"><code>gg_cutden_clos &lt;- fviz_dend(cities_clos_hc, k = 4, # Cut in five groups
           main = &quot;&quot;, cex = 0.7, # label size
@@ -547,27 +547,27 @@ our cities land-use data.</p>
        <p align="center"><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
        <hr width="50%">
 <div id="references-and-r-packages" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> References and R
+<h2><span class="header-section-number">3.2</span> References and R
 Packages</h2>
 <p>Hu, J., Wang, Y., Taubenböck, H., Zhu, X.X. (2021). Land consumption
 in cities: A comparative study across the globe. <em>Cities</em>,
 <strong>113</strong>: 103163, <a
 href="https://doi.org/10.1016/j.cities.2021.103163"
-class="uri">https://doi.org/10.1016/j.cities.2021.103163</a>.</p>
+class="uri" target="_blank">https://doi.org/10.1016/j.cities.2021.103163</a>.</p>
 <p>Kassambara, A. (2018). <em>Determining The Optimal Number Of
 Clusters: 3 Must</em> <em>Know Methods</em>. Datanovia, Montpellier,
 France. (<a href="https://shorturl.at/cntxH"
-class="uri">https://shorturl.at/cntxH</a>)</p>
+class="uri" target="_blank">https://shorturl.at/cntxH</a>)</p>
 <p>Kassambara, A. and Mundt, F. (2020). <em>factoextra: Extract and
 Visualize the</em> <em>Results of Multivariate Data Analyses</em>. R
 package version 1.0.7. <a
 href="https://CRAN.R-project.org/package=factoextra"
-class="uri">https://CRAN.R-project.org/package=factoextra</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=factoextra</a></p>
 <p>Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M., Hornik,
 K.(2021). <em>cluster: Cluster Analysis Basics and Extensions</em>. R
 package version 2.1.2. <a
 href="https://CRAN.R-project.org/package=cluster"
-class="uri">https://CRAN.R-project.org/package=cluster</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=cluster</a></p>
 <p>Reimann, C., Filzmoser, P., Garrett, R. G., &amp; Dutter, R. (2008).
 <em>Statistical Data Analysis Explained: Applied Environmental
 Statistics with R</em> (First ed.). John Wiley &amp; Sons, Chichester,
@@ -576,11 +576,11 @@ UK.</p>
 Statistics with S</em> (<strong>MASS</strong>). Fourth Edition.
 Springer, New York. ISBN 0-387-95457-0. <a
 href="http://www.stats.ox.ac.uk/pub/MASS4/"
-class="uri">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
+class="uri" target="_blank">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
 <p>Wickham, H. (2019). <em>stringr: Simple, Consistent Wrappers for
 Common String</em> <em>Operations</em>. R package version 1.4.0. <a
 href="https://CRAN.R-project.org/package=stringr"
-class="uri">https://CRAN.R-project.org/package=stringr</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=stringr</a></p>
 </div>
        <hr width="50%">
        <p align="center"><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
