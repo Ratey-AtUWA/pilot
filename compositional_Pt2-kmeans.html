@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>compositional_Pt2-kmeans.knit</title>
+
+<script src="compositional_Pt2-kmeans_files/header-attrs-2.14/header-attrs.js"></script>
+<script src="compositional_Pt2-kmeans_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="compositional_Pt2-kmeans_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="compositional_Pt2-kmeans_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="compositional_Pt2-kmeans_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="compositional_Pt2-kmeans_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="compositional_Pt2-kmeans_files/navigation-1.1/tabsets.js"></script>
+<link href="compositional_Pt2-kmeans_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="compositional_Pt2-kmeans_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="compositional_Pt2-kmeans_files/tabwid-1.0.0/tabwid.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<p><img src="compositional_Pt2-kmeans_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<p>We are using the same cities land-use dataset from the previous
+session, from Hu <em>et al</em>. (2021).</p>
+<div id="k-means-clustering" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> K-means clustering</h1>
+<p>K-means clustering is an unsupervised classification method, which is
+a type of machine learning used when you don’t know (or don’t want to
+make assumptions about) any categories or groups. We do have groupings
+in our data, which are the factors <strong>Type</strong>,
+<strong>Global</strong>, and <strong>Region</strong>.</p>
+<p>The goal of the K-means clustering algorithm is to find a specified
+number (<em>K</em>) groups based on the data. The algorithm first
+requires an estimate of the number of clusters, and there are several
+ways to do this. The code below from the factoextra R package tests
+different values of <em>K</em> and computes the ‘total within sum of
+squares’ (WSS) based on the distance of observations from the ‘centroid’
+(mean) of each cluster, which itself is found by an iterative procedure.
+When the decrease in WSS from <em>K</em> to <em>K</em>+1 is minimal, the
+algorithm selects that value of <em>K</em>.</p>
+<pre class="r"><code>#
+require(factoextra)
+data0 &lt;- na.omit(cities[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+nclus_clos &lt;- fviz_nbclust(data0, kmeans, method = &quot;wss&quot;) +
+  geom_vline(xintercept = 3, linetype = 2) +
+  labs(title=&quot;&quot;)
+#   geom_vline(xintercept = 4, linetype = 2) +
+data0 &lt;- na.omit(cities_clr[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+nclus_clr &lt;- fviz_nbclust(data0, kmeans, method = &quot;wss&quot;) +
+  geom_vline(xintercept = 5, linetype = 2) +
+  labs(title=&quot;&quot;)
+ggarrange(nclus_clos,nclus_clr,ncol = 2,nrow = 1, 
+          labels = c(&quot;(a) closed&quot;,&quot;(b) open (clr)&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt2-kmeans_files/figure-html/assess%20optimum%20clusters%20for%20closed%20and%20open%20data-1.png" alt="\label{nClustComp}Estmation of the optimum number of clusters for (a) compositionally closed and (b) open (CLR-transformed) urban land-use data." width="75%" />
+<p class="caption">
+Estmation of the optimum number of clusters for (a) compositionally
+closed and (b) open (CLR-transformed) urban land-use data.
+</p>
+</div>
+<p>We have indicated, in , different numbers of clusters for closed and
+open data, based on visual identification of a break in the slope of the
+WSS <em>vs</em>. ‘Number of clusters’ curve. In the following analyses
+we will assume the same number of clusters (<em>K</em> = 4) for both
+open and closed data.</p>
+<div id="compute-k-means-clustering-for-closed-data"
+class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Compute K-means
+clustering for closed data</h2>
+<pre class="r"><code>data0 &lt;- na.omit(cities[,c(&quot;sType&quot;,&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+data0[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)] &lt;- 
+  scale(data0[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+set.seed(123)
+cities_clos_kmeans &lt;- kmeans(data0[,2:NCOL(data0)], 4, nstart = 25)
+cat(&quot;components of output object are:\n&quot;)
+ls(cities_clos_kmeans)
+cat(&quot;\nK-means clustering with&quot;,length(cities_clos_kmeans$size),
+    &quot;clusters of sizes&quot;,cities_clos_kmeans$size,&quot;\n\n&quot;)
+cat(&quot;Cluster centers (scaled to z-scores) in K-dimensional space:\n&quot;)
+cities_clos_kmeans$centers</code></pre>
+<pre><code>## components of output object are:
+## [1] &quot;betweenss&quot;    &quot;centers&quot;      &quot;cluster&quot;      &quot;ifault&quot;       &quot;iter&quot;        
+## [6] &quot;size&quot;         &quot;tot.withinss&quot; &quot;totss&quot;        &quot;withinss&quot;    
+## 
+## K-means clustering with 4 clusters of sizes 4 5 25 6 
+## 
+## Cluster centers (scaled to z-scores) in K-dimensional space:
+##       Compact       Open Lightweight   Industry
+## 1 -0.46747204 -0.3518504    2.768661 -0.5379637
+## 2  2.13261681 -0.2611873   -0.307629  1.2292765
+## 3 -0.34749463 -0.3901804   -0.307629 -0.3055653
+## 4 -0.01763836  2.0779748   -0.307629  0.6074343</code></pre>
+<template id="72d5f795-9bd0-430e-a3e7-1a18d8e2f07c"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-3086a8ec{}.cl-307ad1ca{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-307ad1e8{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-307af128{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-307b281e{width:144pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-307b281f{width:360pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-307b2828{width:144pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-307b2829{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-307b282a{width:144pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-307b2832{width:360pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-307b2833{width:360pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-307b283c{width:144pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-3086a8ec'>
+<caption class>
+<p>Cities in each K-means cluster from analysis of compsitionally closed
+data.</p>
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-307b283c"><p class="cl-307af128"><span class="cl-307ad1ca">Cluster</span></p></td><td class="cl-307b2833"><p class="cl-307af128"><span class="cl-307ad1ca">Cities</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-307b281e"><p class="cl-307af128"><span class="cl-307ad1e8">Cluster 1</span></p></td><td class="cl-307b281f"><p class="cl-307af128"><span class="cl-307ad1e8">Cape Town Mumbai Islamabad Nairobi</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-307b2828"><p class="cl-307af128"><span class="cl-307ad1e8">Cluster 2</span></p></td><td class="cl-307b2829"><p class="cl-307af128"><span class="cl-307ad1e8">Sao Paulo Jakarta Guangzhou Melbourne Cairo</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-307b282a"><p class="cl-307af128"><span class="cl-307ad1e8">Cluster 3</span></p></td><td class="cl-307b2832"><p class="cl-307af128"><span class="cl-307ad1e8">Sydney Nanjing Istanbul Milan Washington DC Qingdao Wuhan Berlin Santiago de Chile Madrid Vancouver Tehran Changsha Rome San Francisco Rio de Janeiro Amsterdam Lisbon Munich Dongying Cologne Kyoto Shenzhen Zurich Hong Kong</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-307b2828"><p class="cl-307af128"><span class="cl-307ad1e8">Cluster 4</span></p></td><td class="cl-307b2829"><p class="cl-307af128"><span class="cl-307ad1e8">New York Shanghai Beijing Paris London Moscow</span></p></td></tr></tbody></table></div></template>
+<div class="flextable-shadow-host" id="7eadec1e-575c-4869-883e-74abf5bf2cb3"></div>
+<script>
+var dest = document.getElementById("7eadec1e-575c-4869-883e-74abf5bf2cb3");
+var template = document.getElementById("72d5f795-9bd0-430e-a3e7-1a18d8e2f07c");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script>
+
+<p>The output object from the kmeans function is a list which contains
+the information we’re interested in: the sum-of-squares between and
+within clusters (betweenss, tot.withinss, totss, withinss), the location
+in <em>K</em> dimensions of the centers of the clusters (centers), the
+assignment of each observation to a cluster (cluster), the number of
+observations in each cluster (size), and the number of iterations taken
+to find the solution (iter).</p>
+<p>Applying K-means clustering with 4 clusters to the
+<strong>closed</strong> cities land-use data results in one larger
+cluster of 25 cities (3) with three smaller clusters containing 4-6
+cities (1,2, and 4). From the table of cluster centers, we get some idea
+that:</p>
+<ul>
+<li>Cluster 1 cities have greater proportions of Lightweight land
+use</li>
+<li>Cluster 2 cities have greater proportions of Compact land use</li>
+<li>Cluster 3 cities have similar proportions of all land uses</li>
+<li>Cluster 4 cities have greater proportions of Open land use</li>
+</ul>
+<p>Interestingly, Lightweight land use does not discriminate between
+Clusters 2-4, since the values of cluster centers 2-4 are the same in
+the Lightweight dimension.</p>
+</div>
+<div id="compute-k-means-clustering-for-open-data"
+class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Compute K-means
+clustering for open data</h2>
+<pre class="r"><code>data0 &lt;- na.omit(cities_clr[,c(&quot;sType&quot;,&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+data0[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)] &lt;- 
+  scale(data0[,c(&quot;Compact&quot;,&quot;Open&quot;,&quot;Lightweight&quot;,&quot;Industry&quot;)])
+set.seed(123)
+cities_open_kmeans &lt;- kmeans(data0[,2:NCOL(data0)], 4, nstart = 25)
+cat(&quot;components of output object are:\n&quot;)
+ls(cities_open_kmeans)
+cat(&quot;\nK-means clustering with&quot;,length(cities_open_kmeans$size),
+    &quot;clusters of sizes&quot;,cities_open_kmeans$size,&quot;\n\n&quot;)
+cat(&quot;Cluster centers (scaled to z-scores) in K-dimensional space:\n&quot;)
+cities_open_kmeans$centers
+outtable &lt;- data.frame(Cluster = seq(1,length(cities_open_kmeans$size),1),
+                       Cities = rep(&quot;nil&quot;,length(cities_open_kmeans$size)))</code></pre>
+<pre><code>## components of output object are:
+## [1] &quot;betweenss&quot;    &quot;centers&quot;      &quot;cluster&quot;      &quot;ifault&quot;       &quot;iter&quot;        
+## [6] &quot;size&quot;         &quot;tot.withinss&quot; &quot;totss&quot;        &quot;withinss&quot;    
+## 
+## K-means clustering with 4 clusters of sizes 1 10 4 25 
+## 
+## Cluster centers (scaled to z-scores) in K-dimensional space:
+##       Compact       Open Lightweight   Industry
+## 1 -4.04366685  2.1817461   0.9895518  1.8267321
+## 2  0.96352926 -1.0288909  -0.3534227  0.4534289
+## 3 -1.03019007 -1.3458683   2.7726291 -2.2588450
+## 4 -0.05883462  0.5396254  -0.3418336  0.1069743</code></pre>
+<template id="9a1d7b7d-1ba9-48e1-9bec-3e9bdf43fcb6"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-30aeb828{}.cl-30a3f7b2{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-30a3f7bc{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-30a40ea0{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-30a443d4{width:144pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30a443de{width:360pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30a443e8{width:144pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30a443e9{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30a443f2{width:360pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30a443f3{width:144pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30a443fc{width:360pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(255, 255, 255, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30a443fd{width:144pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 1pt solid rgba(255, 255, 255, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-30aeb828'>
+<caption class>
+<p>Cities in each K-means cluster from analysis of data with
+compositional closure removed by centered log ratio transformation.</p>
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-30a443fd"><p class="cl-30a40ea0"><span class="cl-30a3f7b2">Cluster</span></p></td><td class="cl-30a443fc"><p class="cl-30a40ea0"><span class="cl-30a3f7b2">Cities</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-30a443d4"><p class="cl-30a40ea0"><span class="cl-30a3f7bc">Cluster 1</span></p></td><td class="cl-30a443de"><p class="cl-30a40ea0"><span class="cl-30a3f7bc">Cologne</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30a443e8"><p class="cl-30a40ea0"><span class="cl-30a3f7bc">Cluster 2</span></p></td><td class="cl-30a443e9"><p class="cl-30a40ea0"><span class="cl-30a3f7bc">Jakarta Guangzhou Melbourne Cairo Santiago de Chile Vancouver Tehran San Francisco Rio de Janeiro Kyoto</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30a443d4"><p class="cl-30a40ea0"><span class="cl-30a3f7bc">Cluster 3</span></p></td><td class="cl-30a443de"><p class="cl-30a40ea0"><span class="cl-30a3f7bc">Cape Town Mumbai Islamabad Nairobi</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-30a443f3"><p class="cl-30a40ea0"><span class="cl-30a3f7bc">Cluster 4</span></p></td><td class="cl-30a443f2"><p class="cl-30a40ea0"><span class="cl-30a3f7bc">New York Sao Paulo Shanghai Beijing Paris London Moscow Sydney Nanjing Istanbul Milan Washington DC Qingdao Wuhan Berlin Madrid Changsha Rome Amsterdam Lisbon Munich Dongying Shenzhen Zurich Hong Kong</span></p></td></tr></tbody></table></div></template>
+<div class="flextable-shadow-host" id="aae42351-5fb0-4d74-ba0f-a67a78e4b8f0"></div>
+<script>
+var dest = document.getElementById("aae42351-5fb0-4d74-ba0f-a67a78e4b8f0");
+var template = document.getElementById("9a1d7b7d-1ba9-48e1-9bec-3e9bdf43fcb6");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script>
+
+<p>Applying K-means clustering with 4 clusters to the
+<strong>open</strong> cities land-use data results in one larger cluster
+of 25 cities (Cluster 4 - not the same cities as the cluster of 25 from
+analyusis of closed data!). There are three smaller clusters containing
+1-10 cities (1-3). From the table of cluster centers, we get might
+conclude that:</p>
+<ul>
+<li>The Cluster 1 city has greater Industry, and lower Compact, land
+use</li>
+<li>10 Cluster 2 cities have greater Compact, and lower Open, land
+uses</li>
+<li>4 Cluster 3 cities have greater Lightweight, and lower Industry land
+uses</li>
+<li>25 Cluster 4 cities have somewhat greater Open land use</li>
+</ul>
+<p>An interesting question to ask is whether the clusters are similar to
+the categories we already have in the dataset (Type, Global, and
+Region). The following plot includes labelling to help us see the
+relationship of K-means clusters to the Type category.</p>
+<p>To represent clustering in 3 or more dimensions in a plot, we can use
+principal components to reduce the number of dimensions, but still
+retain information from all the variables. This is done very nicely by
+the <strong>fviz_cluster()</strong> function from the R package
+<strong>factoextra</strong> (Kassambara and Mundt, 2020). The output
+from fviz_cluster is a ggplot, so for more efficient presentation and
+comparison, we save the ggplot2 output to objects, and plot these
+together using the ggarrange() function from the ggpubr R package.</p>
+</div>
+<div id="plot-kmeans-clusters-for-closed-and-open-data"
+class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Plot kmeans clusters
+for closed and open data</h2>
+<pre class="r"><code>row.names(data0) &lt;- paste0(data0$sType,seq(1,NROW(data0)))
+kmeans_viz_clos &lt;- fviz_cluster(cities_clos_kmeans, data = data0[,2:NCOL(data0)],
+             palette = c(&quot;#800000&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;,&quot;purple2&quot;),
+             labelsize=10, main = &quot;&quot;,
+             ellipse.type = &quot;euclid&quot;, # Concentration ellipse
+             star.plot = TRUE, # Add segments from centroids to items
+             repel = F, # if true avoids label overplotting (slow)
+             ggtheme = theme_minimal())
+kmeans_viz_open &lt;- fviz_cluster(cities_open_kmeans, data = data0[,2:NCOL(data0)],
+             palette = c(&quot;#800000&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;,&quot;purple2&quot;),
+             labelsize=10, main = &quot;&quot;,
+             ellipse.type = &quot;euclid&quot;, # Concentration ellipse
+             star.plot = TRUE, # Add segments from centroids to items
+             repel = F, # if true avoids label overplotting (slow)
+             ggtheme = theme_minimal())
+ggarrange(kmeans_viz_clos,kmeans_viz_open,ncol = 2,
+          labels = c(&quot;(a) closed&quot;,&quot;(b) open (clr)&quot;))</code></pre>
+<div class="figure" style="text-align: center">
+<img src="compositional_Pt2-kmeans_files/figure-html/visualize%20kmeans%20clusters%20compared-1.png" alt="\label{kmeansComp}K-means cluster plots comparing (a) closed and (b) CLR-transformed (opened) urban land-use data." width="100%" />
+<p class="caption">
+K-means cluster plots comparing (a) closed and (b) CLR-transformed
+(opened) urban land-use data.
+</p>
+</div>
+<p>From the plots in we can see that, for both the closed and open
+cities land use data, K-means clustering did not produce clusters that
+overlap convincingly with the city Type category in our data. There is
+some differentiation; for example in both cases there is a cluster
+(cluster 1 for closed data, cluster 3 for open data) composed only of
+Open-Lightweight (OL) cities. It’s also clear that removing
+compositional closure in the data makes a difference to both the size of
+the resulting K-means cluster and their composition (in terms of cities
+belonging to each cluster). We haven’t checked the relationship of the
+other categories (Global, Region) to the clusters obtained, but some
+editing of the code would answer this question for us!</p>
+</div>
+<div id="references-and-r-packages" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> References and R
+Packages</h2>
+<p>Hu, J., Wang, Y., Taubenböck, H., Zhu, X.X. (2021). Land consumption
+in cities: A comparative study across the globe. <em>Cities</em>,
+<strong>113</strong>: 103163, <a
+href="https://doi.org/10.1016/j.cities.2021.103163"
+class="uri">https://doi.org/10.1016/j.cities.2021.103163</a>.</p>
+<p>Kassambara, A. and Mundt, F. (2020). <em>factoextra: Extract and
+Visualize the Results of Multivariate Data Analyses</em>. R package
+version 1.0.7. <a href="https://CRAN.R-project.org/package=factoextra"
+class="uri">https://CRAN.R-project.org/package=factoextra</a></p>
+<p>Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M., Hornik,
+K.(2021). <em>cluster: Cluster Analysis Basics and Extensions</em>. R
+package version 2.1.2. <a
+href="https://CRAN.R-project.org/package=cluster"
+class="uri">https://CRAN.R-project.org/package=cluster</a></p>
+<p>Reimann, C., Filzmoser, P., Garrett, R. G., &amp; Dutter, R. (2008).
+<em>Statistical Data Analysis Explained: Applied Environmental
+Statistics with R</em> (First ed.). John Wiley &amp; Sons, Chichester,
+UK.</p>
+<p>Venables, W. N. &amp; Ripley, B. D. (2002) <em>Modern Applied
+Statistics with S</em> (<strong>MASS</strong>). Fourth Edition.
+Springer, New York. ISBN 0-387-95457-0. <a
+href="http://www.stats.ox.ac.uk/pub/MASS4/"
+class="uri">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
+<p>Wickham, H. (2019). <em>stringr: Simple, Consistent Wrappers for
+Common String Operations</em>. R package version 1.4.0. <a
+href="https://CRAN.R-project.org/package=stringr"
+class="uri">https://CRAN.R-project.org/package=stringr</a></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
