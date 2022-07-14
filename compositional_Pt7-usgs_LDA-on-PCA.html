@@ -11,7 +11,7 @@
 
 
 
-<title>compositional_Pt7-usgs_LDA-on-PCA.knit</title>
+<title>LDA using PCA as input</title>
 
 <script src="compositional_Pt7-usgs_LDA-on-PCA_files/header-attrs-2.14/header-attrs.js"></script>
 <script src="compositional_Pt7-usgs_LDA-on-PCA_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -173,13 +173,18 @@ pre code {
 </div>
 
 
-<p><img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<p><img src="page%201%20header%20Pt7.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+
+<hr width="50%" align="left">
+<p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+<hr width="50%" align="left">
+
 <p>We are using a curated version of a whole rock composition dataset
 from The US Geological Survey (<a
 href="https://mrdata.usgs.gov/ngdb/rock/"
-class="uri">https://mrdata.usgs.gov/ngdb/rock/</a>). This mostly
+class="uri" target="_blank">https://mrdata.usgs.gov/ngdb/rock/</a>). This mostly
 contains data for rock samples from the USA, with a small proportion of
-data from other geographical regions ().</p>
+data from other geographical regions (Figure 7.1).</p>
 <pre class="r"><code>require(ggplot2); require(maps)
 mp &lt;- NULL
 mapWorld &lt;- borders(&quot;world&quot;, colour=&quot;gray&quot;, fill=&quot;gray&quot;) # create a layer of borders
@@ -190,9 +195,9 @@ ggplot() + mapWorld +
   scale_colour_manual(values = rainbow(21, v=0.75, end=0.85)) + 
   xlim(-180,180) + theme_minimal()</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/sample%20location%20map-1.png" alt="\label{sampleMap}Location maps for samples in the USGS National Geochemical Database subset used in this guide." width="90%" />
+<img src="sample%20location%20map-1.png" alt="Location maps for USGS NGDB samples" width="90%" />
 <p class="caption">
-Location maps for samples in the USGS National Geochemical Database
+v: Location maps for samples in the USGS National Geochemical Database
 subset used in this guide.
 </p>
 </div>
@@ -232,7 +237,7 @@ background-color: transparent;
 }
 </style><div class="tabwid"><style>.cl-dd28cfb0{}.cl-dd1c8bb0{font-family:'Arial';font-size:9pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-dd1c8be2{font-family:'Arial';font-size:9pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-dd1cad84{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-dd1cad85{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-dd1d13f0{width:108pt;height:10.8pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d13f1{width:180pt;height:10.8pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d13fa{width:144pt;height:10.8pt;background-color:rgba(239, 239, 239, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1404{width:180pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1418{width:108pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1419{width:144pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d142c{width:144pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1436{width:108pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1437{width:180pt;height:10.8pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1438{width:144pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 1pt solid rgba(181, 195, 223, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d1440{width:108pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dd1d144a{width:180pt;background-color:rgba(208, 224, 255, 1.00);vertical-align: middle;border-bottom: 1pt solid rgba(181, 195, 223, 1.00);border-top: 1pt solid rgba(181, 195, 223, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(181, 195, 223, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-dd28cfb0'>
 <caption class>
-<p>Numbers of samples in the USGS data by rock category and general
+<p>Table 7.1 Numbers of samples in the USGS data by rock category and general
 type.</p>
 </caption>
 <thead><tr style="overflow-wrap:break-word;"><td class="cl-dd1d1438"><p class="cl-dd1cad84"><span class="cl-dd1c8bb0">Category</span></p></td><td class="cl-dd1d1440"><p class="cl-dd1cad85"><span class="cl-dd1c8bb0">n</span></p></td><td class="cl-dd1d144a"><p class="cl-dd1cad84"><span class="cl-dd1c8bb0">Type</span></p></td></tr></thead><tbody><tr><td class="cl-dd1d13fa"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">andesite</span></p></td><td class="cl-dd1d13f0"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">950</span></p></td><td class="cl-dd1d13f1"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">intermediate</span></p></td></tr><tr><td class="cl-dd1d1419"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">basalt</span></p></td><td class="cl-dd1d1418"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">1,082</span></p></td><td class="cl-dd1d1404"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">mafic</span></p></td></tr><tr><td class="cl-dd1d13fa"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">dacite</span></p></td><td class="cl-dd1d13f0"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">983</span></p></td><td class="cl-dd1d13f1"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">intermediate</span></p></td></tr><tr><td class="cl-dd1d1419"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">gabbro</span></p></td><td class="cl-dd1d1418"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">471</span></p></td><td class="cl-dd1d1404"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">mafic</span></p></td></tr><tr><td class="cl-dd1d13fa"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">granite</span></p></td><td class="cl-dd1d13f0"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">988</span></p></td><td class="cl-dd1d13f1"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">felsic</span></p></td></tr><tr><td class="cl-dd1d1419"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">peridotite</span></p></td><td class="cl-dd1d1418"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">62</span></p></td><td class="cl-dd1d1404"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">ultramafic</span></p></td></tr><tr><td class="cl-dd1d13fa"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">pyroxenite</span></p></td><td class="cl-dd1d13f0"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">105</span></p></td><td class="cl-dd1d13f1"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">ultramafic</span></p></td></tr><tr><td class="cl-dd1d142c"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">rhyolite</span></p></td><td class="cl-dd1d1436"><p class="cl-dd1cad85"><span class="cl-dd1c8be2">1,339</span></p></td><td class="cl-dd1d1437"><p class="cl-dd1cad84"><span class="cl-dd1c8be2">felsic</span></p></td></tr></tbody></table></div></template>
@@ -333,12 +338,12 @@ cumsum(round(pca_usgs$sdev^2/sum(pca_usgs$sdev^2),3))</code></pre>
 number="1.1.1">
 <h3><span class="header-section-number">1.1.1</span> Visualize PCA scree
 plot (eigenvalues)</h3>
-<p>The scree plot for this PCA in shows 7 components with variances
+<p>The scree plot for this PCA in Figure 7.2 shows 7 components with variances
 (eigenvalues) greater than 1.</p>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/scree%20plots-1.png" alt="\label{screeplot}PCA scree plots for whole-rock composition data, corrected for closure using CLR-transformation." width="50%" />
+<img src="scree%20plots-7_1.png" alt="PCA scree plot for CLR-transformed whole-rock composition data" width="50%" />
 <p class="caption">
-PCA scree plots for whole-rock composition data, corrected for closure
+Figure 7.2: PCA scree plot for whole-rock composition data, corrected for closure
 using CLR-transformation.
 </p>
 </div>
@@ -395,9 +400,9 @@ legend(&quot;topleft&quot;, bty = &quot;n&quot;, inset = 0.003, ncol=1,
        pt.cex = c(1.2, 1.4, 1.2,1.2,1.4),
        cex = 1, x.intersp = 0.6, y.intersp = 0.9)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/visualise%20PCA-1.png" alt="\label{PCAbiplot}PCA biplot for major element rock composition data, with observations categorised by rock type. Data were corrected for closure using CLR-transformation." width="65%" />
+<img src="visualise%20PCA-7_1.png" alt="PCA biplot for rock composition data" width="65%" />
 <p class="caption">
-PCA biplot for major element rock composition data, with observations
+Figure 7.3: PCA biplot for rock composition data, with observations
 categorised by rock type. Data were corrected for closure using
 CLR-transformation.
 </p>
@@ -411,14 +416,14 @@ CLR-transformation.
                 alpha.ind = 0.35)
 usgsBP + theme_classic()</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/factoextra%20pca%20biplot-1.png" alt="\label{FVbiplot}PCA biplot for major element rock composition data generated with the factoextra package, with observations categorised by rock type. Data were corrected for closure using CLR-transformation." width="65%" />
+<img src="factoextra%20pca%20biplot-1.png" alt="PCA biplot generated with the factoextra package" width="65%" />
 <p class="caption">
-PCA biplot for major element rock composition data generated with the
+Figure 7.4: PCA biplot for rock composition data generated with the
 factoextra package, with observations categorised by rock type. Data
 were corrected for closure using CLR-transformation.
 </p>
 </div>
-<p>We can see the results of this PCA biplot visualization in and .
+<p>We can see the results of this PCA biplot visualization in Figure 7.3 and Figure 7.4.
 Those of you who are geologically or geochemically inclined can decide
 whether the apparent element associations (<em>e.g</em>. the similar
 vectors for Ce, La, and Y) make sense. There certainly does seem to be
@@ -540,14 +545,14 @@ subscript in the <em>pred_lda_pca$x[,1]</em> option.</p>
 <pre class="r"><code>pred_lda_pca &lt;- predict(lda_pca_usgs, usgs_clr[,34:48])
 ldahist(pred_lda_pca$x[,1], g = usgs_clr$Rock, type = &quot;both&quot;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/lda%20histogram-1.png" alt="\label{ldaHist}Histogram based on the first linear discriminant function for LDA on selected principal components calculated from open (CLR-transformed) whole-rock major element data." width="576" height="80%" />
+<img src="lda%20histogram-1.png" alt="LDA Histogram for first linear discriminant function" width="576" height="80%" />
 <p class="caption">
-Histogram based on the first linear discriminant function for LDA on
+Figure 7.5: Histogram based on the first linear discriminant function for LDA on
 selected principal components calculated from open (CLR-transformed)
 whole-rock major element data.
 </p>
 </div>
-<p>The histograms in show the most overlap in the first linear
+<p>The histograms in Figure 7.5 show the most overlap in the first linear
 discriminant between rocks of the same broad type (<em>e.g</em>. the two
 ultramafic rocks <em>peridotite</em> and <em>pyroxenite</em>). We only
 plot this LDA dimension to save space, but it would be good practice to
@@ -598,22 +603,22 @@ plot(ldapcaPred_usgs$x[,1], ldapcaPred_usgs$x[,2],
 abline(v=0,col=&quot;grey&quot;,lty=2); abline(h=0,col=&quot;grey&quot;,lty=2)
 mtext(&quot;(b)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/plot%20LDA%20PCA-1.png" alt="\label{LDAPCAbiplot}Linear discriminant analysis (LDA) plots for Pricipal Components based on open (CLR-transformed) rock composition data: (a) variable coefficients in LD1-LD2 space, and predictions for observations in (b) LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD3 space. Legend in (a) applies to plots (b), (c), and (d)." width="85%" />
+<img src="plot%20LDA%20PCA-1.png" alt="LDA plots for Principal Components from CLR-transformed rock compositions" width="85%" />
 <p class="caption">
-Linear discriminant analysis (LDA) plots for Pricipal Components based
+Figure 7.6: Linear discriminant analysis (LDA) plots for Principal Components based
 on open (CLR-transformed) rock composition data: (a) variable
 coefficients in LD1-LD2 space, and predictions for observations in (b)
 LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD3 space. Legend in (a)
 applies to plots (b), (c), and (d).
 </p>
 </div>
-<p>The plot in looks slightly weird, as the labels for the LDA
+<p>The plot in Figure 7.6 looks slightly weird, as the labels for the LDA
 coefficients reflect the use of Principal Components as predictors. In
 this sense they may not be as intuitively interpretable as predictors
 which are actual measured variables (or transformations of these
 variables, at least.</p>
 <p>It definitely seems that LDA is able to separate categories (hint:
-try thinking of (b) and (c) as the front and top views of a 3D cloud of
+try thinking of Figure 7.6(b) and (c) as the front and top views of a 3D cloud of
 points). There may be some overlap of different rocks within the same
 type, <em>e.g</em>. the felsic rocks granite and rhyolite, and the plot
 may exacerbate the visual overlap by using similar colours for rocks in
@@ -900,7 +905,7 @@ Filzmoser, P., Hron, K. <em>et al</em>. (2021). Classical and robust
 regression analysis with compositional data. <em>Mathematical
 Geosciences</em> <strong>53</strong>, 823–858. <a
 href="https://doi.org/10.1007/s11004-020-09895-w"
-class="uri">https://doi.org/10.1007/s11004-020-09895-w</a></p>
+class="uri" target="_blank">https://doi.org/10.1007/s11004-020-09895-w</a></p>
 <p>We have some data on 106 topsoil (A-horizon) soil samples including
 proportions of soil grainsize-range categories and other numeric
 variables. The data have been censored to remove observations (rows)
@@ -951,9 +956,9 @@ corrplot(cor0$r, method=&quot;ellipse&quot;, title = &quot;&quot;, cl.ratio = 0.
          addCoef.col = &quot;black&quot;, tl.col = &quot;darkred&quot;, cl.pos = &quot;b&quot;)
 mtext(&quot;(b) Open (alr)&quot;, side = 3, line = 1, adj = 0.05)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/compare%20correlation%20matrices-1.png" alt="\label{CompCorr}Correlations in soil texture variables, omitting Sand content since it is used as the denominator for additive log-ratio transformation, for (a) untransformed (closed) and (b) alr-transformed (opened) grain size data." width="70%" />
+<img src="compare%20correlation%20matrices-1.png" alt="Correlations in soil texture variables omitting Sand" width="70%" />
 <p class="caption">
-Correlations in soil texture variables, omitting Sand content since it
+Figure 7.7: Correlations in soil texture variables, omitting Sand content since it
 is used as the denominator for additive log-ratio transformation, for
 (a) untransformed (closed) and (b) alr-transformed (opened) grain size
 data.
@@ -969,22 +974,23 @@ variables, <em>i.e</em>.:</p>
 class="math inline">\(Clay.alr_i =\ln\frac{Clay_i}{Sand_i}\)</span>;
 <span class="math inline">\(Silt.alr_i =
 \ln\frac{Silt_i}{Sand_i}\)</span></p>
-<p>The collinearity of the closed data was not very pronounced (), but
+<p>The collinearity of the closed data was not very pronounced (Figure 7.7), but
 of course one of the parts of the composition (sand) was not included.
 If it is, the correlation matrix for untransformed variables looks like
-, with a large negative correlation between Gravel and Sand.</p>
+Figure 7.8, with a large negative correlation between Gravel and Sand.</p>
 <pre class="r"><code>par(mar=c(1,5,5,3), mfrow=c(1,1), mgp=c(1.5,0.2,0), xpd=T)
 cor0 &lt;- rcorr(as.matrix(topsoil[,c(&quot;Gravel&quot;,&quot;Sand&quot;,&quot;Silt&quot;,&quot;Clay&quot;)]))
 corrplot(cor0$r, method=&quot;ellipse&quot;, cl.ratio = 0.25,
-         addCoef.col = &quot;black&quot;, tl.col = &quot;grey33&quot;, cl.pos = &quot;b&quot;)</code></pre>
+         addCoef.col = &quot;black&quot;, tl.col = &quot;grey33&quot;, cl.pos = &quot;b&quot;)
+par(mfrow=c(1,1), mar = c(4,4,1,1))</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt7-usgs_LDA-on-PCA_files/figure-html/correlation%20matrix%20for%20all%20grainsize%20ategs-1.png" alt="\label{CompCor2}Correlations in soil texture variables (including Sand content) for untransformed (closed) grain size data." width="35%" />
+<img src="correlation%20matrix%20for%20all%20grainsize%20ategs-1.png" alt="Correlations for all soil texture variables" width="35%" />
 <p class="caption">
-Correlations in soil texture variables (including Sand content) for
+Figure 7.8: Correlations in soil texture variables (<em>including</em> Sand content) for
 untransformed (closed) grain size data.
 </p>
 </div>
-<pre class="r"><code>par(mfrow=c(1,1), mar = c(4,4,1,1))</code></pre>
+
 <p>We now fit a linear model to both versions of the grain-size category
 data, using ordinary least-squares regression. For a “fair” comparison,
 we omit sand from both versions, since it is the denominator in the
@@ -1085,6 +1091,11 @@ compositionally closed data!</li>
 complex compositional dataset.</li>
 </ol>
 </div>
+
+<hr width="50%" align="left">
+<p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+<hr width="50%" align="left">
+
 <div id="references" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> References</h2>
 <p>Campbell, G. P., Curran, J. M., Miskelly, G. M., Coulson, S., Yaxley,
@@ -1092,33 +1103,33 @@ G. M., Grunsky, E. C., &amp; Simon C. Cox. (2009). Compositional data
 analysis for elemental data in forensic science. <em>Forensic Science
 International</em>, <strong>188</strong>, 81-90. <a
 href="https://doi.org/10.1016/j.forsciint.2009.03.018"
-class="uri">https://doi.org/10.1016/j.forsciint.2009.03.018</a></p>
+class="uri" target="_blank">https://doi.org/10.1016/j.forsciint.2009.03.018</a></p>
 <p>Fox, J. (2022). <em>RcmdrMisc: R Commander Miscellaneous
 Functions</em>. R package version 2.7-2. <a
 href="https://CRAN.R-project.org/package=RcmdrMisc"
-class="uri">https://CRAN.R-project.org/package=RcmdrMisc</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=RcmdrMisc</a></p>
 <p>Fox, John and Sanford Weisberg (2019). <em>An {R} Companion to
 Applied Regression</em> (<strong>car</strong>), Third Edition. Thousand
 Oaks CA: Sage. URL: <a
 href="https://socialsciences.mcmaster.ca/jfox/Books/Companion/"
-class="uri">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a></p>
+class="uri" target="_blank">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a></p>
 <p>Garrett, R.G. (2018). <em>rgr: Applied Geochemistry EDA</em>. R
 package version 1.1.15. <a href="https://CRAN.R-project.org/package=rgr"
-class="uri">https://CRAN.R-project.org/package=rgr</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=rgr</a></p>
 <p>Grunsky, E. C. (2010). The interpretation of geochemical survey data.
 <em>Geochemistry: Exploration, Environment, Analysis</em>,
 <strong>10</strong>, 27-74. <a
 href="https://doi.org/10.1144/1467-7873/09-210"
-class="uri">https://doi.org/10.1144/1467-7873/09-210</a></p>
+class="uri" target="_blank">https://doi.org/10.1144/1467-7873/09-210</a></p>
 <p>Kassambara, A. and Mundt, F. (2020). <em>factoextra: Extract and
 Visualize the Results of Multivariate Data Analyses</em>. R package
 version 1.0.7. <a href="https://CRAN.R-project.org/package=factoextra"
-class="uri">https://CRAN.R-project.org/package=factoextra</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=factoextra</a></p>
 <p>Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M., Hornik,
 K.(2021). <em>cluster: Cluster Analysis Basics and Extensions</em>. R
 package version 2.1.2. <a
 href="https://CRAN.R-project.org/package=cluster"
-class="uri">https://CRAN.R-project.org/package=cluster</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=cluster</a></p>
 <p>Reimann, C., Filzmoser, P., Garrett, R. G., and Dutter, R. (2008).
 <em>Statistical Data Analysis Explained: Applied Environmental
 Statistics with R</em> (First ed.). John Wiley &amp; Sons, Chichester,
@@ -1127,7 +1138,7 @@ UK.</p>
 Statistics with S</em> (<strong>MASS</strong>). Fourth Edition.
 Springer, New York. ISBN 0-387-95457-0. <a
 href="http://www.stats.ox.ac.uk/pub/MASS4/"
-class="uri">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
+class="uri" target="_blank">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
 <p>Weihs, C., Ligges, U., Luebke, K. and Raabe, N. (2005).
 <strong>klaR</strong> – Analyzing German Business Cycles.
 <strong>In</strong> Baier, D., Decker, R. and Schmidt-Thieme, L. (eds.).
@@ -1136,14 +1147,19 @@ Berlin.</p>
 <p>Wickham, H. (2019). <em>stringr: Simple, Consistent Wrappers for
 Common String Operations</em>. R package version 1.4.0. <a
 href="https://CRAN.R-project.org/package=stringr"
-class="uri">https://CRAN.R-project.org/package=stringr</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=stringr</a></p>
 <p>Xu, N., Rate, A. W., &amp; Morgan, B. (2018). From source to sink:
 Rare-earth elements trace the legacy of sulfuric dredge spoils on
 estuarine sediments. <em>Science of The Total Environment</em>,
 <strong>637-638</strong>, 1537-1549. <a
 href="https://doi.org/10.1016/j.scitotenv.2018.04.398"
-class="uri">https://doi.org/10.1016/j.scitotenv.2018.04.398</a></p>
+class="uri" target="_blank">https://doi.org/10.1016/j.scitotenv.2018.04.398</a></p>
 </div>
+
+<hr width="50%" align="left">
+<p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+<hr width="50%" align="left">
+
 </div>
 
 

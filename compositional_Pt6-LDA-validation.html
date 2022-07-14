@@ -162,24 +162,20 @@ pre code {
 
 
 
+<p><img src="page%201%20header%20Pt6.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<hr width="50%" align="left">
+<p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+<hr width="50%" align="left">
 
-<div id="header">
+<h1>6 Validation of LDA models for Supervised Classification</h1>
 
-
-
-<h1 class="title toc-ignore">LDA validation</h1>
-
-</div>
-
-
-<p><img src="compositional_Pt6-LDA-validation_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
 <p>We are using a curated version of a whole rock major element dataset
 from Hallberg (<a
 href="https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry"
-class="uri">https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry</a>)</p>
+class="uri" target="_blank">https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry</a>)</p>
 <div id="use-alr-transformation-to-remove-closure"
-class="section level2" number="0.1">
-<h2><span class="header-section-number">0.1</span> Use <em>ALR</em>
+class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Use <em>ALR</em>
 transformation to remove closure</h2>
 <pre class="r"><code>Hallberg_alr &lt;- Hallberg
 Hallberg_alr[,c(11:12,14:24)] &lt;- 
@@ -187,8 +183,8 @@ Hallberg_alr[,c(11:12,14:24)] &lt;-
 <pre><code>##   The divisor is Al2O3</code></pre>
 </div>
 <div id="lda-on-closed-whole-rock-major-element-data"
-class="section level2" number="0.2">
-<h2><span class="header-section-number">0.2</span> LDA on closed whole
+class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> LDA on closed whole
 rock major element data</h2>
 <p>…using LDA to discriminate the Rock type – the predictors are the
 major element oxide contents.</p>
@@ -206,8 +202,8 @@ colnames(props) &lt;- paste0(&quot;LD&quot;,seq(1:length(props))); print(props, 
 ## [1,] 0.868 0.0822 0.0325 0.0103 0.00599 0.000663 8.08e-05</code></pre>
 </div>
 <div id="lda-on-open-alr-whole-rock-major-element-data"
-class="section level2" number="0.3">
-<h2><span class="header-section-number">0.3</span> LDA on open (ALR)
+class="section level2" number="6.3">
+<h2><span class="header-section-number">6.3</span> LDA on open (ALR)
 whole rock major element data</h2>
 <pre class="r"><code>data0 &lt;- Hallberg_alr
 data0[,11:24] &lt;- scale(data0[,11:24]) # scale just numeric variables
@@ -231,8 +227,8 @@ ldaPred_rock_open &lt;- predict(lda_rock_open)</code></pre>
 </div>
 <div
 id="inspecting-the-agreement-between-actual-and-predicted-categories-in-lda"
-class="section level2" number="0.4">
-<h2><span class="header-section-number">0.4</span> Inspecting the
+class="section level2" number="6.4">
+<h2><span class="header-section-number">6.4</span> Inspecting the
 agreement between actual and predicted categories in LDA</h2>
 <p>To do this easily we just make an R data frame with columns for the
 actual categories (from the original data frame) and the predicted
@@ -300,8 +296,8 @@ such as the one we investigate below.</p>
 </div>
 <div
 id="assessment-of-lda-prediction-using-a-training-validation-method"
-class="section level2" number="0.5">
-<h2><span class="header-section-number">0.5</span> Assessment of LDA
+class="section level2" number="6.5">
+<h2><span class="header-section-number">6.5</span> Assessment of LDA
 prediction using a training-validation method</h2>
 <p>This can be done a different way, by including the <strong>CV =
 TRUE</strong> option in the <strong>lda()</strong> function, which
@@ -433,15 +429,15 @@ rm(list = c(&quot;n0&quot;,&quot;ftrain&quot;,&quot;i&quot;,&quot;isOK&quot;,&qu
 ## 6        Peridotite           558    896           62.3%
 ## 7        Pyroxenite           232    428           54.2%
 ## 8 Spinel Peridotite           111    406           27.3%</code></pre>
-<p>The number of iterations makes some difference ()!</p>
+<p>The number of iterations makes some difference (Figure 6.1)!</p>
 <p>So, it looks like we should run at least 50-100 iterations to get a
 reasonable idea of how well our LDA model performs. More iterations is
 better, but it depends how long you want the run-time to be!</p>
 <p></p>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt6-LDA-validation_files/figure-html/accuracy%20vs%20iterations-1.png" alt="\label{AccuIter}Accuracy (shown by 95% confidence interval error bars) as a function of number of train-validate iterations for the linear discriminant analysis model using closed whole rock composition data." width="40%" />
+<img src="accuracy%20vs%20iterations-1.png" alt="Accuracy vs number of train-validate iterations" width="40%" />
 <p class="caption">
-Accuracy (shown by 95% confidence interval error bars) as a function of
+Figure 6.1: Accuracy (shown by 95% confidence interval error bars) as a function of
 number of train-validate iterations for the linear discriminant analysis
 model using closed whole rock composition data.
 </p>
@@ -486,7 +482,7 @@ Spinel Peridotite.</p>
 <p>We may get better prediction accuracy by including different
 variables in the LDA model. The original Hallberg geochemistry data at
 <a href="https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry"
-class="uri">https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry</a>
+class="uri" target="_blank">https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry</a>
 also contain trace element concentrations, which can sometimes provide
 better discrimination than major element concentrations alone. This
 would be an interesting exercise to extend one’s skills in data curation
@@ -497,40 +493,45 @@ we used for prediction are necessary. The R package
 <em>stepclass()</em> function, which enables us to refine an LDA model,
 using a procedure similar to stepwise selection of predictors in
 multiple regression.</p>
-<div id="references" class="section level3" number="0.5.1">
-<h3><span class="header-section-number">0.5.1</span> References</h3>
+
+<hr width="50%" align="left">
+<p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+<hr width="50%" align="left">
+
+<div id="references" class="section level3" number="6.6">
+<h2><span class="header-section-number">6.6</span> References</h2>
 <p>Campbell, G. P., Curran, J. M., Miskelly, G. M., Coulson, S., Yaxley,
 G. M., Grunsky, E. C., &amp; Simon C. Cox. (2009). Compositional data
 analysis for elemental data in forensic science. <em>Forensic Science
 International</em>, <strong>188</strong>, 81-90. <a
 href="https://doi.org/10.1016/j.forsciint.2009.03.018"
-class="uri">https://doi.org/10.1016/j.forsciint.2009.03.018</a></p>
+class="uri" target="_blank">https://doi.org/10.1016/j.forsciint.2009.03.018</a></p>
 <p>Fox, J. (2022). <em>RcmdrMisc: R Commander Miscellaneous
 Functions</em>. R package version 2.7-2. <a
 href="https://CRAN.R-project.org/package=RcmdrMisc"
-class="uri">https://CRAN.R-project.org/package=RcmdrMisc</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=RcmdrMisc</a></p>
 <p>Fox, John and Sanford Weisberg (2019). <em>An {R} Companion to
 Applied Regression</em> (<strong>car</strong>), Third Edition. Thousand
 Oaks CA: Sage. URL: <a
 href="https://socialsciences.mcmaster.ca/jfox/Books/Companion/"
-class="uri">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a></p>
+class="uri" target="_blank">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a></p>
 <p>Garrett, R.G. (2018). <em>rgr: Applied Geochemistry EDA</em>. R
 package version 1.1.15. <a href="https://CRAN.R-project.org/package=rgr"
-class="uri">https://CRAN.R-project.org/package=rgr</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=rgr</a></p>
 <p>Grunsky, E. C. (2010). The interpretation of geochemical survey data.
 <em>Geochemistry: Exploration, Environment, Analysis</em>,
 <strong>10</strong>, 27-74. <a
 href="https://doi.org/10.1144/1467-7873/09-210"
-class="uri">https://doi.org/10.1144/1467-7873/09-210</a></p>
+class="uri" target="_blank">https://doi.org/10.1144/1467-7873/09-210</a></p>
 <p>Kassambara, A. and Mundt, F. (2020). <em>factoextra: Extract and
 Visualize the Results of Multivariate Data Analyses</em>. R package
 version 1.0.7. <a href="https://CRAN.R-project.org/package=factoextra"
-class="uri">https://CRAN.R-project.org/package=factoextra</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=factoextra</a></p>
 <p>Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M., Hornik,
 K.(2021). <em>cluster: Cluster Analysis Basics and Extensions</em>. R
 package version 2.1.2. <a
 href="https://CRAN.R-project.org/package=cluster"
-class="uri">https://CRAN.R-project.org/package=cluster</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=cluster</a></p>
 <p>Reimann, C., Filzmoser, P., Garrett, R. G., and Dutter, R. (2008).
 <em>Statistical Data Analysis Explained: Applied Environmental
 Statistics with R</em> (First ed.). John Wiley &amp; Sons, Chichester,
@@ -539,7 +540,7 @@ UK.</p>
 Statistics with S</em> (<strong>MASS</strong>). Fourth Edition.
 Springer, New York. ISBN 0-387-95457-0. <a
 href="http://www.stats.ox.ac.uk/pub/MASS4/"
-class="uri">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
+class="uri" target="_blank">http://www.stats.ox.ac.uk/pub/MASS4/</a></p>
 <p>Weihs, C., Ligges, U., Luebke, K. and Raabe, N. (2005).
 <strong>klaR</strong> – Analyzing German Business Cycles.
 <strong>In</strong> Baier, D., Decker, R. and Schmidt-Thieme, L. (eds.).
@@ -548,14 +549,19 @@ Berlin.</p>
 <p>Wickham, H. (2019). <em>stringr: Simple, Consistent Wrappers for
 Common String Operations</em>. R package version 1.4.0. <a
 href="https://CRAN.R-project.org/package=stringr"
-class="uri">https://CRAN.R-project.org/package=stringr</a></p>
+class="uri" target="_blank">https://CRAN.R-project.org/package=stringr</a></p>
 <p>Xu, N., Rate, A. W., &amp; Morgan, B. (2018). From source to sink:
 Rare-earth elements trace the legacy of sulfuric dredge spoils on
 estuarine sediments. <em>Science of The Total Environment</em>,
 <strong>637-638</strong>, 1537-1549. <a
 href="https://doi.org/10.1016/j.scitotenv.2018.04.398"
-class="uri">https://doi.org/10.1016/j.scitotenv.2018.04.398</a></p>
+class="uri" target="_blank">https://doi.org/10.1016/j.scitotenv.2018.04.398</a></p>
 </div>
+
+<hr width="50%" align="left">
+<p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+<hr width="50%" align="left">
+
 </div>
 
 

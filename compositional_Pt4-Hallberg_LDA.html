@@ -11,7 +11,7 @@
 
 
 
-<title>compositional_Pt4-Hallberg_LDA.knit</title>
+<title>LDA – Linear Discriminant Analysis</title>
 
 <script src="compositional_Pt4-Hallberg_LDA_files/header-attrs-2.14/header-attrs.js"></script>
 <script src="compositional_Pt4-Hallberg_LDA_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -170,15 +170,18 @@ pre code {
 
 </div>
 
+<hr width="50%" align="left">
+<p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+<hr width="50%" align="left">
 
-<p><img src="compositional_Pt4-Hallberg_LDA_files/figure-html/page%201%20header%20hide%20code-1.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
+<p><img src="page%201%20header%20Pt4.png" width="100%" style="display: block; margin: auto 0 auto auto;" /></p>
 <p>We are using a curated version of a whole rock major element dataset
 from Hallberg (<a
 href="https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry"
-class="uri">https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry</a>)</p>
+class="uri" target="_blank">https://catalogue.data.wa.gov.au/dataset/hallberg-geochemistry</a>)</p>
 <div id="lda-linear-discriminant-analysis" class="section level1"
-number="1">
-<h1><span class="header-section-number">1</span> LDA – Linear
+number="4">
+<h1><span class="header-section-number">4</span> LDA – Linear
 Discriminant Analysis</h1>
 <p>We use <strong>linear discriminant analysis (LDA)</strong> to create
 functions of the dataset variables which maximise the separation between
@@ -220,8 +223,8 @@ variables (<em>i.e</em>. conversion to Z-scores with mean = 0 and
 standard deviation = 1). This avoids the variables with larger absolute
 values having an unbalanced effect on the results.</p>
 <div id="lda-on-closed-whole-rock-major-element-data"
-class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> LDA on closed whole
+class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> LDA on closed whole
 rock major element data</h2>
 <p>We will use LDA to discriminate the rock type, contained in the
 column ‘<strong>Rock</strong>’ in the Hallberg dataset. The variables we
@@ -310,8 +313,8 @@ print(lda_rock_clos)</code></pre>
 ## 0.8683 0.0816 0.0319 0.0102 0.0061 0.0019 0.0001</code></pre>
 </div>
 <div id="lda-on-open-clr-whole-rock-major-element-data"
-class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> LDA on open (CLR)
+class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> LDA on open (CLR)
 whole rock major element data</h2>
 <pre class="r"><code>data0 &lt;- Hallberg_clr
 data0[,11:24] &lt;- scale(data0[,11:24]) # scale just numeric variables
@@ -410,18 +413,18 @@ linear regression, this would mean a Pearson’s r <span
 class="math inline">\(\ge\)</span> 0.8.]</p>
 </div>
 <div id="visualising-lda-separation" class="section level2"
-number="1.3">
-<h2><span class="header-section-number">1.3</span> Visualising LDA
+number="4.3">
+<h2><span class="header-section-number">4.3</span> Visualising LDA
 separation</h2>
-<div id="lda-histograms" class="section level3" number="1.3.1">
-<h3><span class="header-section-number">1.3.1</span> LDA histograms</h3>
+<div id="lda-histograms" class="section level3" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> LDA histograms</h3>
 <p>We can plot the separation achieved by each linear discriminant (LD)
 function by predicting the classification using the input data, then
 using the <strong>ldahist</strong> function (Venables and Ripley 2002).
 To see the separation in another LDA dimension, we change the subscript
 in the <strong>predClos$x[,1]</strong> option. Histograms (actually
 drawn with custom code, enabling a plot with a side-by side comparison)
-are shown in .</p>
+are shown in Figure 4.1.</p>
 <pre class="r"><code>predClos &lt;- predict(lda_rock_clos, Hallberg[,11:21])
 predOpen &lt;- predict(lda_rock_open, Hallberg[,11:21])
 LD1c &lt;- data.frame(Rock=as.character(Hallberg$Rock),LD1=predClos$x[,1])
@@ -450,20 +453,20 @@ for (i in 1:nlevels(LD1o$Rock)){
   if(i==1) mtext(&quot;(b) Open data&quot;, 3, 0.5, font=2, cex = 1.4, col = 2)
 }</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt4-Hallberg_LDA_files/figure-html/lda%20hist%20compare-1.png" alt="\label{ldahistComp}Histograms based on the first linear discriminant function for (a) closed and (b) open (CLR-transformed) whole-rock major element data." width="80%" />
+<img src="lda%20hist%20compare-1.png" alt="Histograms of LD1 for closed and open whole-rock major element data" width="80%" />
 <p class="caption">
-Histograms based on the first linear discriminant function for (a)
+Figure 4.1: Histograms based on the first linear discriminant function for (a)
 closed and (b) open (CLR-transformed) whole-rock major element data.
 </p>
 </div>
-<p>The sets of histograms for closed and open data in both show some
+<p>The sets of histograms for closed and open data in Figure 4.1 both show some
 separation of categories, but with overlap. Of course this only shows
 the separation in one dimension, and two or more dimensions may be
 needed to achieve clear separation. We will make plots showing more than
 one LDA dimension later.</p>
 </div>
-<div id="partition-plots" class="section level3" number="1.3.2">
-<h3><span class="header-section-number">1.3.2</span> Partition
+<div id="partition-plots" class="section level3" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> Partition
 plots</h3>
 <p>Another potentially useful way of showing separation of groups in LDA
 is to use a <em>partition plot</em>, accessible using the
@@ -485,15 +488,15 @@ with(Hallberg_clr,
      )
 mtext(&quot;(b)&quot;, 3, -1.5, adj=0.95, font=2, cex = 1.2)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt4-Hallberg_LDA_files/figure-html/pplot%20comparison-1.png" alt="\label{pplotComp}Partition plots for (a) closed and (b) open (CLR-transformed) whole rock major element data, based on the SiO2 and TiO2 contents. Filled symbols are means in each category, with red letters showing apparently mis-classified observations." width="100%" />
+<img src="pplot%20comparison-1.png" alt="Partition plots based on SiO2 and TiO2" width="100%" />
 <p class="caption">
-Partition plots for (a) closed and (b) open (CLR-transformed) whole rock
+Figure 4.2: Partition plots for (a) closed and (b) open (CLR-transformed) whole rock
 major element data, based on the SiO2 and TiO2 contents. Filled symbols
 are means in each category, with red letters showing apparently
 mis-classified observations.
 </p>
 </div>
-<p>Partition plots, such as those in , are presented for single pairwise
+<p>Partition plots, such as those in Figure 4.2, are presented for single pairwise
 combinations of the variables (in this example SiO<sub>2</sub> and
 TiO<sub>2</sub>) used to make the LDA model. We can make differnt plots
 by specifying different variables in the <strong>drawparti()</strong>
@@ -507,8 +510,8 @@ apparent error rate for that view of the data.</p>
 </div>
 </div>
 <div id="scatter-plots-resembling-biplots" class="section level2"
-number="1.4">
-<h2><span class="header-section-number">1.4</span> Scatter Plots
+number="4.4">
+<h2><span class="header-section-number">4.4</span> Scatter Plots
 resembling biplots</h2>
 <p>Scatter-plots showing each variable and observation in linear
 discriminant dimensions, and grouped by category, are useful for visual
@@ -577,9 +580,9 @@ abline(h=0,col=&quot;grey&quot;,lty=2)
 #      pos=1, offset=0.15, cex=0.65)
 mtext(&quot;(d)&quot;, 3, -1.5, adj = 0.55, cex = 1.2, font = 2)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt4-Hallberg_LDA_files/figure-html/plot%20LDA%20closed-1.png" alt="\label{LDAclos}Linear discriminant analysis (LDA) plots for closed rock composition data: (a) variable coefficients in LD1-LD2 space, and predictions for observations in (b) LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD4 space. Legend in (d) also applies to (b) and (c)." width="80%" />
+<img src="plot%20LDA%20closed-1.png" alt="LDA plots for closed rock composition data" width="80%" />
 <p class="caption">
-Linear discriminant analysis (LDA) plots for closed rock composition
+Figure 4.3: Linear discriminant analysis (LDA) plots for closed rock composition
 data: (a) variable coefficients in LD1-LD2 space, and predictions for
 observations in (b) LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD4 space.
 Legend in (d) also applies to (b) and (c).
@@ -640,38 +643,39 @@ abline(v=0,col=&quot;grey&quot;,lty=2); abline(h=0,col=&quot;grey&quot;,lty=2)
 #      col=c(2,4,6,3,12)[Hallberg$Rock], pos=1, offset=0.15, cex=0.65)
 mtext(&quot;(d)&quot;, 3, -1.5, adj = 0.05, cex = 1.2, font = 2)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="compositional_Pt4-Hallberg_LDA_files/figure-html/plot%20LDA%20open-1.png" alt="\label{LDAopen}Linear discriminant analysis (LDA) plots for open (CLR-transformed) rock composition data: (a) variable coefficients in LD1-LD2 space, and predictions for observations in (b) LD1-LD2 space; (c) LD1-LD3 space; (d) LS2-LD3 space. Legend in (a) applies to plots (b), (c), and (d)." width="70%" />
+<img src="plot%20LDA%20open-1.png" alt="LDA plots for open rock composition data" width="70%" />
 <p class="caption">
-Linear discriminant analysis (LDA) plots for open (CLR-transformed) rock
+Figure 4.4: Linear discriminant analysis (LDA) plots for open (CLR-transformed) rock
 composition data: (a) variable coefficients in LD1-LD2 space, and
 predictions for observations in (b) LD1-LD2 space; (c) LD1-LD3 space;
 (d) LS2-LD3 space. Legend in (a) applies to plots (b), (c), and (d).
 </p>
 </div>
-<p>From the plots in and , we can see that the LDA models obtained are
+<p>From the plots in Figure 4.3 and Figure 4.4, we can see that the LDA models obtained are
 cetainly able to separate observations by the selected factor. Firstly,
-however, there is a lot of clustering of the predictor variables in (a),
+however, there is a lot of clustering of the predictor variables in Figure 4.3(a),
 which may relate to spurious relationships between variables caused by
-compositional closure. This clustering is not so pronounced in (a),
+compositional closure. This clustering is not so pronounced in Figure 4.4(a),
 since the closure has been removed by CLR-transformation.</p>
 <p>Out of the combinations of LDA dimensions selected, the best
 separation is with LD2 <em>vs</em>. LD1, which is not surprising since
 these dimensions together account for about 95% of the between-groups
-variance – for both closed and open data. There is a lot of apparent
+variance &ndash; for both closed and open data. There is a lot of apparent
 overlap, but we can not see the true separation in only 2 dimensions.
 The LDA performed on open data may result in slightly clearer separation
 of samples by Rock category than LDA using closed data, but without a
 multidimensional view this is also hard to be sure about.</p>
 <p>One way that we can get a better idea about the usefulness of our
-classification models is to perform some validation. This involves
+classification models is to perform some <strong>validation</strong>. This involves
 ‘training’ the model on a subset of our data, and trying to predict the
 category of a different subset using the training model. A later session
 will look at some ways we can do this.</p>
 </div>
 </div>
-
-
-
+       <h2>4.5 References are in other pages</h2>
+<hr width="50%" align="left">
+<p><a href="https://ratey-atuwa.github.io/pilot/index.html">Return to Contents page</a></p>
+<hr width="50%" align="left">
 
 </div>
 
